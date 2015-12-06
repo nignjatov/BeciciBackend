@@ -17,5 +17,10 @@ module.exports = {
       info: path.join(__dirname, 'logs', 'info.log'),
     }
   },
+  languages: [
+    "en","rs"
+  ],
+  descriptionMaxLength: 300,
+
   errorCodes: {}
 };
