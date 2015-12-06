@@ -5,6 +5,7 @@ var validation = require('../validation');
 module.exports = {
   // Route validation + error_handle + format + logger
   in: function (req, res, next) {
+    // prepare params and body and query into req.input
     logger.log(req);
     return validation.apply(null, arguments);
   },

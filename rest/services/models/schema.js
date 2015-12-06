@@ -7,20 +7,13 @@ var ServiceSchema = new Schema({
     enum: ["roomService","freeService"]
   },
   title: {
-    type: String,
+    type: Schema.Types.Mixed,
     required: true
   },
-  language: {
-    type: String,
-    required: true,
-    enum: Container.config.languages
-  },
   description: {
-    type: String,
-    maxlength: Container.config.descriptionMaxLength
+    type: Schema.Types.Mixed
   },
   image: String,
-
   created_at: {
     type: Date,
     default: Date.now

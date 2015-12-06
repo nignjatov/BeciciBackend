@@ -7,6 +7,6 @@ var schema = require('./schema.js');
 // statics
 // Ovo je method na modelu
 
-var model = mongoose.model('ServiceSchema', schema);
+var model = mongoose.model('service', schema);
 
 module.exports = model;

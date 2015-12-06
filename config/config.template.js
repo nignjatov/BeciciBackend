@@ -20,7 +20,5 @@ module.exports = {
   languages: [
     "en","rs"
   ],
-  descriptionMaxLength: 300,
-
   errorCodes: {}
 };

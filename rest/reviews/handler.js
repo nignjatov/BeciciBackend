@@ -8,15 +8,6 @@ module.exports = (function () {
         return next(null, list);
       });
     },
-
-    getApprovedReviewsByLanguage: function (req, res, next) {
-      var lang = req.params.lang;
-      return reviews.find({language: lang}, function (err, list) {
-        if (err) return next("MONGO_ERROR", err);
-        return next(null, list);
-      });
-    },
-
     updateReviewStatus: function (req, res, next) {
       var revId = req.params.reviewId;
       var status = req.params.status;
@@ -25,7 +16,6 @@ module.exports = (function () {
         return next();
       });
     },
-
     deleteReview: function (req, res, next) {
       var revId = req.params.reviewId;
       return reviews.findOneAndRemove({_id: revId}, function (err) {

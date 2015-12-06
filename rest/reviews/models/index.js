@@ -7,6 +7,6 @@ var schema = require('./schema.js');
 // statics
 // Ovo je method na modelu
 
-var model = mongoose.model('user', schema);
+var model = mongoose.model('review', schema);
 
 module.exports = model;
