@@ -20,5 +20,6 @@ module.exports = {
   languages: [
     "en","rs"
   ],
-  errorCodes: {}
+  errorCodes: {},
+  validation: {}
 };

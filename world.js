@@ -10,10 +10,12 @@ module.exports = {
     // Prepare errorCodes
     _.assign(Container.config.errorCodes, require(path.join(__dirname, 'config', 'errorCodes')));
     return async.each(Container.services, function (service, callback) {
-      if (!fs.existsSync(path.join(__dirname, 'rest', service, 'config', 'errorCodes', 'index.js'))) {
-        return callback();
+      if (fs.existsSync(path.join(__dirname, 'rest', service, 'config', 'errorCodes', 'index.js'))) {
+        _.assign(Container.config.errorCodes, require(path.join(__dirname, 'rest', service, 'config', 'errorCodes')));
       }
-      _.assign(Container.config.errorCodes, require(path.join(__dirname, 'rest', service, 'config', 'errorCodes')))
+      // if (fs.existsSync(path.join(__dirname, 'rest', service, 'config', 'validation.js'))) {
+      //   _.assign(Container.config.validation, require(path.join(__dirname, 'rest', service, 'config', 'validation.js')));
+      // }
       return callback();
     }, callback)
   }
