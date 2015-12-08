@@ -1,7 +1,7 @@
 module.exports = {
-  'SERVICE_NOT_FOUND': {
+  'BLOG_NOT_FOUND': {
     httpCode: 404,
-    message: "There is no such user",
+    message: "There is no such album",
     errorServerity: "green"
   }
 }

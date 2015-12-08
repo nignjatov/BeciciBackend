@@ -17,8 +17,8 @@ var UserSchema = new Schema({
   email: {
       type: String,
       required: true,
-      unique: true
-      // pattern: /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+      unique: true,
+      pattern: /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
   },
   password: {
     type: String,
