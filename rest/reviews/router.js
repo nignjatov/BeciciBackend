@@ -1,13 +1,16 @@
 var express = require('express');
 var handler = require('./handler.js');
+var validation = require('./config/validation.js');
+var RouterFactory = require('../../libs/router-factory');
 
 module.exports = (function () {
-  var router = express.Router();
-  // TODO: APIDOC docs + swagger :)
-  router.get("/", handler.getReviews);
-  router.patch("/:reviewId/:status", handler.updateReviewStatus);
-  router.post("/", handler.createReview);
-  router.delete("/:reviewId", handler.deleteReview);
+  // Set path for collecting validation file :)
+  var router = RouterFactory(__dirname);
 
-  return router;
+  router.register("getReviews", "GET", "/list", [], handler.getReviews);
+  router.register("createReview", "POST", "/list", ["user"], handler.createReview);
+  router.register("updateReviewStatus", "PATCH", "/:reviewId/:status", ["admin"], handler.updateReviewStatus);
+  router.register("deleteReview", "DELETE", "/:reviewId", ["admin"], handler.deleteReview);
+
+  return router.getRoutes();
 })();
