@@ -2,18 +2,19 @@ var users = require("./models");
 
 module.exports = (function () {
   return {
+      getUsers: function (req, res, next) {
+          return users.find({}, function (err, list) {
+              if (err) return next("MONGO_ERROR", err);
+              req.payload = list;
+              return next();
+          });
+      },
       getUser: function (req, res, next) {
         var userId = req.params.userId;
         return users.findOne({_id: userId}, function (err, found) {
           if (err) return next("MONGO_ERROR", err);
           if (!found) return next("NOT_FOUND");
           return next(null, found);
-        });
-      },
-      getUsers: function (req, res, next) {
-        return users.find({}, function (err, list) {
-          if (err) return next("MONGO_ERROR", err);
-          return next(null, list);
         });
       },
       updateUser: function (req, res, next) {

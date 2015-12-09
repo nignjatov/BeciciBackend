@@ -1,22 +1,17 @@
 
 var logger = require('../logger');
-var validation = require('../validation');
 
 module.exports = {
-  // Route validation + error_handle + format + logger
-  in: function (req, res, next) {
-    // prepare params and body and query into req.input
-    logger.log(req);
-    return validation.apply(null, arguments);
-  },
-  // Error handle + Shoot payload
-  out: function (req, res, next) {
-    res.json(req.payload);
-    // The end;
+  in: function httpIn (req, res, next) {
+    Container.Logger.log(req);
     return next();
   },
-  error: function (err, req, res, next) {
-    console.log("ERROR HANDLE");
+  out: function httpOut (req, res, next) {
+    res.json(req.payload);
+    return next();
+  },
+  error: function httpErrorHandle (err, req, res, next) {
     res.status(Container.config.errorCodes[err].httpCode).json(Container.config.errorCodes[err]);
+    return next();
   }
-}
+};

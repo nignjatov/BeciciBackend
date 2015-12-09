@@ -58,11 +58,11 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
       return async.each(dirs, function (dir, callback) {
         if (!/\.js/.exec(dir)) {
           // error handle todo
-          var exist = fs.existsSync(path.join(__dirname, 'rest', dir, 'init.js'))
+          var exist = fs.existsSync(path.join(__dirname, 'rest', dir, 'init.js'));
           if (exist) {
             var restPoint = require(path.join(__dirname, 'rest', dir, 'init.js'));
             restPoint(function (err, router) {
-              if (err) return callback("MODULE_ERROR", err)
+              if (err) return callback("MODULE_ERROR", err);
               app.use("/" + dir, router);
               return callback();
             });
@@ -80,6 +80,7 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
         // Exit middleware
         app.use(request.out);
         app.use(request.error);
+
 
         return app.listen(3000, function () {
           console.log("App listening on port 3000");

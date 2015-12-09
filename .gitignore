@@ -3,3 +3,4 @@ storage/
 config/config.dev.js
 .idea
 .idea/vcs.xml
+test.js
