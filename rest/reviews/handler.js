@@ -11,7 +11,7 @@ module.exports = (function () {
     updateReviewStatus: function (req, res, next) {
       var revId = req.params.reviewId;
       var status = req.params.status;
-      return reviews.findOneAndModify({_id: userId}, {status: status}, function (err) {
+      return reviews.findOneAndModify({_id: revId}, {status: status}, function (err) {
         if (err) return next("MONGO_ERROR", err);
         return next();
       });

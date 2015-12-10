@@ -1,7 +1,7 @@
 module.exports = {
-  'BLOG_NOT_FOUND': {
+  'MESSAGE_NOT_FOUND': {
     httpCode: 404,
-    message: "There is no such blog item",
+    message: "There is no such message",
     errorServerity: "green"
   }
 }
