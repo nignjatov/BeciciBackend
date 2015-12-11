@@ -1,30 +1,19 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var ReviewSchema = new Schema({
-  stars: {
-    type: Number,
+var SocialSchema = new Schema({
+  network: {
+    type: String,
+    enum : ['facebook','twitter','youtube'],
     required: true,
-    min: 1,
-    max: 5
   },
-  language: {
-    type: String,
-    enum : Container.config.languages
+  link: {
+    type: String
   },
-  description: {
-    type: String,
-    maxlength : 300
-  },
-  status: {
-    type: String,
-    enum: ['waiting', 'approved', 'rejected', 'archived'],
+  active: {
+    type: Boolean,
     required: true
-  },
-  created_at: {
-    type: Date,
-    default: Date.now
   }
 });
 
-module.exports = ReviewSchema;
+module.exports = SocialSchema;

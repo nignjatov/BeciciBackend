@@ -9,7 +9,7 @@ module.exports = (function () {
 
   router.register("getMessages", "GET", "/list", [], handler.getMessages);
   router.register("createMessage", "POST", "/list", ["user"], handler.createMessage);
-  router.register("updateMesageStatus", "PATCH", "/:messageId/:status", ["admin"], handler.updateMesageStatus);
+  router.register("updateMessageStatus", "PATCH", "/:messageId/:status", ["admin"], handler.updateMessageStatus);
   router.register("deleteMessage", "DELETE", "/:messageId", ["admin"], handler.deleteMessage);
 
   return router.getRoutes();

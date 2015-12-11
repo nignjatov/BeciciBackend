@@ -4,7 +4,8 @@ var Schema   = mongoose.Schema;
 var ServiceSchema = new Schema({
   serviceType: {
     type: String,
-    enum: ["roomService","freeService"]
+    enum: ["roomService","freeService"],
+    required: true
   },
   title: {
     type: Schema.Types.Mixed,

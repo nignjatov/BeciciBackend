@@ -33,7 +33,7 @@ module.exports = (function () {
     addImage: function (req, res, next) {
       var albumId = req.params.albumId;
       return albums.findByIdAndUpdate(albumId,
-        {$push: {"images": req.params.image}},
+        {$push: {"images": req.body.image}},
         {safe: true, upsert: true},
         function(err) {
           if (err) return next("MONGO_ERROR", err);

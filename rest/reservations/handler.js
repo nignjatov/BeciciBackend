@@ -17,7 +17,7 @@ module.exports = (function () {
       });
     },
     deleteReservation: function (req, res, next) {
-      var reservationId = req.params.reviewId;
+      var reservationId = req.params.reservationId;
       return reservations.findOneAndRemove({_id: reservationId}, function (err) {
         if (err) return next("MONGO_ERROR", err);
         return next();

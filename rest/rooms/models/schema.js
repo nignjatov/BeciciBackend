@@ -32,7 +32,7 @@ var RoomSchema = new Schema({
   bed_number: Number,
   free_services: [{
     type: Schema.Types.ObjectId,
-    ref: 'Service',
+    ref: 'Service'
   }],
   created_at: {
     type: Date,

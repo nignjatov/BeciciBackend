@@ -8,10 +8,10 @@ module.exports = (function () {
         return next(null, list);
       });
     },
-    updateMesageStatus: function (req, res, next) {
-      var revId = req.params.reviewId;
+    updateMessageStatus: function (req, res, next) {
+      var messageId = req.params.messageId;
       var status = req.params.status;
-      return messages.findOneAndModify({_id: revId}, {status: status}, function (err) {
+      return messages.findOneAndModify({_id: messageId}, {status: status}, function (err) {
         if (err) return next("MONGO_ERROR", err);
         return next();
       });

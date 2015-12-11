@@ -9,16 +9,16 @@ module.exports = (function () {
       });
     },
     updateReviewStatus: function (req, res, next) {
-      var revId = req.params.reviewId;
+      var reviewId = req.params.reviewId;
       var status = req.params.status;
-      return reviews.findOneAndModify({_id: revId}, {status: status}, function (err) {
+      return reviews.findOneAndModify({_id: reviewId}, {status: status}, function (err) {
         if (err) return next("MONGO_ERROR", err);
         return next();
       });
     },
     deleteReview: function (req, res, next) {
-      var revId = req.params.reviewId;
-      return reviews.findOneAndRemove({_id: revId}, function (err) {
+      var reviewId = req.params.reviewId;
+      return reviews.findOneAndRemove({_id: reviewId}, function (err) {
         if (err) return next("MONGO_ERROR", err);
         return next();
       });

@@ -9,8 +9,8 @@ module.exports = (function () {
 
   router.register("getRooms", "GET", "/list", [], handler.getRooms);
   router.register("createRoom", "POST", "/list", ["admin"], handler.createRoom);
-  router.register("updateRoom", "PATCH", "/:roomId", ["admin"], handler.updateRoom);
-  router.register("deleteRoom", "DELETE", "/:roomId", ["admin"], handler.deleteRoom);
+  //router.register("updateRoom", "PATCH", "/:roomId", ["admin"], handler.updateRoom);
+  //router.register("deleteRoom", "DELETE", "/:roomId", ["admin"], handler.deleteRoom);
 
   return router.getRoutes();
 })();

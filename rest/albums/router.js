@@ -13,7 +13,7 @@ module.exports = (function () {
   router.register("deleteAlbum", "DELETE", "/:albumId", ["admin"], handler.deleteAlbum);
   router.register("renameAlbum", "PATCH", "/:albumId", ["admin"], handler.renameAlbum);
   router.register("addImage", "POST", "/:albumId/", ["admin"], handler.addImage);
-  router.register("deleteImage", "DELETE", "/:albumId/:imageId", ["admin"], handler.deleteImage);
+  router.register("deleteImage", "DELETE", "/:albumId/:image", ["admin"], handler.deleteImage);
 
   return router.getRoutes();
 
