@@ -9,7 +9,7 @@ module.exports = {
   mongodb: {
     host: "mongodb://localhost",
     port: ":27017",
-    db: "becici"
+    db: "/becici"
   },
   logger: {
     loggerPath: {

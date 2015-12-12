@@ -20,16 +20,6 @@ var UserSchema = new Schema({
       unique: true,
       pattern: /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
   },
-  password: {
-    type: String,
-    required: true
-  },
-  active: Boolean,
-  type: {
-    type: String,
-    enum: ['admin', 'user'],
-    required: true
-  },
   phone: String,
   created_at: {
     type: Date,

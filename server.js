@@ -22,11 +22,9 @@ var world = require("./world.js");
 var app = express();
 global.Container = {};
 // Dev vs Prod
-if (process.argv[2] == 'prod') {
-  Container.config = require('./config/config.prod.js');
-} else {
-  Container.config = require('./config/config.dev.js');
-}
+var env = (process.argv[2]) ? process.argv[2] : 'dev';
+Container.config = require('./config/config.' + env + '.js');
+
 // Load app
 mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port + Container.config.mongodb.db, function (err) {
   if (err) throw err;
@@ -85,6 +83,9 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
         return app.listen(3000, function () {
           console.log("App listening on port 3000");
           // post-init.js
+          if (env == 'test') {
+              console.log("Tests go!");
+          }
         });
       })
     })
