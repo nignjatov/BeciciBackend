@@ -3,11 +3,14 @@ var path = require('path');
 var _ = require('lodash');
 var logger = require('./libs/logger');
 var async = require('async');
+var constants = require('./config/constants.js');
 
 module.exports = {
   init: function (callback) {
+    // Load constants
+    Container.path = constants;
     // Remember this array
-    Container.services = fs.readdirSync(path.join(__dirname, 'rest'));
+    Container.services = fs.readdirSync(Container.path.REST_PATH);
     // Make logger available everywhere
     Container.Logger = logger;
     // Prepare errorCodes

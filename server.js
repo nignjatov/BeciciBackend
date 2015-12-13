@@ -31,6 +31,10 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
 
   world.init(function () {
 
+    app.use(methodOverride());
+    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(bodyParser.json());
+
     app.use(request.in);
     app.use(session({
       secret: crypto.randomBytes(32).toString('hex'),
@@ -44,8 +48,7 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
     // app.use(passport.initialize());
     // app.use(passport.session());
 
-    app.use(bodyParser.urlencoded({extended: true}));
-    app.use(bodyParser.json());
+
 
     return fs.readdir(path.join(__dirname, 'rest'), function (err, dirs) {
       if (err) throw err;
@@ -84,7 +87,7 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
           console.log("App listening on port 3000");
           // post-init.js
           if (env == 'test') {
-              console.log("Tests go!");
+            console.log("Tests go!");
           }
         });
       })

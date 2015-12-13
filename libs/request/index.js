@@ -11,7 +11,8 @@ module.exports = {
     return next();
   },
   error: function httpErrorHandle (err, req, res, next) {
-    res.status(Container.config.errorCodes[err].httpCode).json(Container.config.errorCodes[err]);
+    console.log(err);
+    //res.status(Container.config.errorCodes[err].httpCode).json(Container.config.errorCodes[err]);
     return next();
   }
 };

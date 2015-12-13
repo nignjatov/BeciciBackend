@@ -2,6 +2,9 @@ var path = require('path');
 var express = require('express');
 var validate = require('isvalid').validate;
 var _ = require('lodash');
+var multer = require('multer');
+
+var upload = require('../multipart');
 
 module.exports = function (dirName) {
   // Constructor
@@ -10,8 +13,10 @@ module.exports = function (dirName) {
     this.router = express.Router();
     this.bulkMiddleware = [];
   }
+
   // Main route factory
-  RouteFactory.prototype.register = function (name, methodName, route, permission, callback) {
+  RouteFactory.prototype.register = function (name, methodName, route, permission, callback, multipart) {
+    this.setMultipart(multipart);
     //this.getAuthorizationMiddleware(name, permission);
     this.getValidationMiddleware(name);
     this.makeRoute(methodName, route, callback);
@@ -54,13 +59,19 @@ module.exports = function (dirName) {
 
     this.bulkMiddleware.push(validationRoutes);
   };
+  RouteFactory.prototype.setMultipart = function (multipart) {
+    if (!multipart) {
+      return;
+    }
+    this.bulkMiddleware.push(upload(multipart));
+  };
   // Register new route with all middleware + handler (callback)
   RouteFactory.prototype.makeRoute = function (methodName, route, callback) {
     this.bulkMiddleware.push(collectInput);
     this.bulkMiddleware.push(callback);
     this.router[methodName.toLowerCase()](route, this.bulkMiddleware);
 
-    function collectInput (req, res, next) {
+    function collectInput(req, res, next) {
       req.inputData = {};
       _.assign(req.inputData, req.params);
       _.assign(req.inputData, req.query);

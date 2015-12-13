@@ -2,16 +2,21 @@ module.exports = {
   'SYSTEM_ERROR': {
     httpCode: 500,
     message: 'Oops! Something went wrong :(',
-    errorServerity: 3
+    errorSeverity: 3
   },
   'MONGO_ERROR': {
     httpCode: 500,
     message: 'Oops! Something went wrong :(',
-    errorServerity: 3
+    errorSeverity: 3
   },
   'AUTHORIZATION_ERROR': {
     httpCode: 403,
     message: 'You are not authorized',
-    errorServerity: 2
+    errorSeverity: 2
+  },
+  'FILE_FORMAT_ERROR': {
+    httpCode: 500,
+    message: 'Wrong file format!',
+    errorSeverity: 2
   }
-}
+};
