@@ -54,25 +54,24 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
       if (err) throw err;
       if (!dirs || !dirs.length) throw "No modules";
 
-      var adminRoute;
-
       return async.each(dirs, function (dir, callback) {
-        if (!/\.js/.exec(dir)) {
-          // error handle todo
-          var exist = fs.existsSync(path.join(__dirname, 'rest', dir, 'init.js'));
-          if (exist) {
-            var restPoint = require(path.join(__dirname, 'rest', dir, 'init.js'));
-            restPoint(function (err, router) {
+        var exist = fs.existsSync(path.join(__dirname, 'rest', dir, 'init.js'));
+        if (exist) {
+          var restPoint = require(path.join(__dirname, 'rest', dir, 'init.js'));
+          if (dir == 'auth') {
+            restPoint(passport, function (err, router) {
               if (err) return callback("MODULE_ERROR", err);
               app.use("/" + dir, router);
               return callback();
             });
           } else {
-            return callback();
+            restPoint(function (err, router) {
+              if (err) return callback("MODULE_ERROR", err);
+              app.use("/" + dir, router);
+              return callback();
+            });
           }
         } else {
-          adminRoute = require(path.join(__dirname, 'rest', dir));
-          app.use("/admin", adminRoute);
           return callback();
         }
       }, function (err) {
