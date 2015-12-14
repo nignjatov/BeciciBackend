@@ -8,7 +8,7 @@ var path = require('path');
 module.exports = function (multipart) {
 
   function fileFilter (req, file, cb) {
-    var allowed = ['png', 'jpg', 'jpeg', 'mp4'];
+    var allowed = ['png', 'jpg', 'jpeg'];
     var check = file.mimetype.split('/')[1];
     if (!_.includes(allowed, check)) {
       return cb("FILE_FORMAT_ERROR")

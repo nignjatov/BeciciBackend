@@ -17,32 +17,24 @@ module.exports = function (dirName) {
   // Main route factory
   RouteFactory.prototype.register = function (name, methodName, route, permission, callback, multipart) {
     this.setMultipart(multipart);
-    //this.getAuthorizationMiddleware(name, permission);
+    this.getAuthorizationMiddleware(name, permission);
     this.getValidationMiddleware(name);
     this.makeRoute(methodName, route, callback);
     this.cleanup();
-    return;
+    return null;
   };
-  // Create req.special -> validation.permission // special slot reserved for special actions
+  // TODO: Implement after passport
   RouteFactory.prototype.getAuthorizationMiddleware = function (name, permission) {
-    // [] -> all
-    // ['admin'] -> admin only
-    // ?? public/private ??
-    if (permission.length) {
-      this.bulkMiddleware.push(function (req, res, next) {
-        //if (req.user.role != permission.pop()) {
-        //  return next("AUTHORIZATION_ERROR");
-        //}
-        return next();
-      });
+    if (Container.config.app.auth) {
+
     }
-    // special role param ( validation assigned )
-    // this.bulkMiddleware.push(function (req, res, next) {
-    //   req.special = (req.user.role == 'admin') ? this.validationSchema[name].permission.admin : this.validationSchema[name].permission.user;
-    // });
+    return null;
   };
   // Create validation middleware based on validation file
   RouteFactory.prototype.getValidationMiddleware = function (name) {
+    if (!Container.config.app.validation) {
+      return null;
+    }
     var validationRoutes = [];
     
     if (this.validationSchema[name]) {
@@ -57,19 +49,19 @@ module.exports = function (dirName) {
       }
     }
 
-    this.bulkMiddleware.push(validationRoutes);
+    return this.bulkMiddleware.push(validationRoutes);
   };
   RouteFactory.prototype.setMultipart = function (multipart) {
     if (!multipart) {
-      return;
+      return null;
     }
-    this.bulkMiddleware.push(upload(multipart));
+    return this.bulkMiddleware.push(upload(multipart));
   };
   // Register new route with all middleware + handler (callback)
   RouteFactory.prototype.makeRoute = function (methodName, route, callback) {
     this.bulkMiddleware.push(collectInput);
     this.bulkMiddleware.push(callback);
-    this.router[methodName.toLowerCase()](route, this.bulkMiddleware);
+    return this.router[methodName.toLowerCase()](route, this.bulkMiddleware);
 
     function collectInput(req, res, next) {
       req.inputData = {};
@@ -81,7 +73,7 @@ module.exports = function (dirName) {
   };
   // Resereved for post-register cleanup
   RouteFactory.prototype.cleanup = function () {
-    this.bulkMiddleware = [];
+    return this.bulkMiddleware = [];
   };
   // Return at end of route file to get full service router
   RouteFactory.prototype.getRoutes = function () {

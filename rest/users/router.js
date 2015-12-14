@@ -13,7 +13,12 @@ module.exports = (function () {
   router.register("updateUser", "PATCH", "/:userId", [], handler.updateUser);
   router.register("deleteUser", "DELETE", "/:userId", ["admin"], handler.deleteUser);
   router.register("getUser", "GET", "/:userId", [], handler.getUser);
-  router.register("uploadAvatar", "PUT", "/:userId/avatar", [], handler.uploadAvatar, {storage: "avatars", type: 'single', name: 'avatar', options: null});
+  router.register("uploadAvatar", "PUT", "/:userId/avatar", [], handler.uploadAvatar, {
+    storage: "avatars",
+    type: 'single',
+    name: 'avatar',
+    options: null
+  });
 
   return router.getRoutes();
 
