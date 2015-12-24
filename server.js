@@ -67,7 +67,7 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
           } else {
             restPoint(function (err, router) {
               if (err) return callback("MODULE_ERROR", err);
-              app.use("/" + dir, router);
+              app.use("/api/" + dir, router);
               return callback();
             });
           }
