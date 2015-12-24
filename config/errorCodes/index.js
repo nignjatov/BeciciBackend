@@ -1,4 +1,9 @@
 module.exports = {
+  'MODULE_NOT_FOUND': {
+    httpCode: 500,
+    message: 'Oops! Something went wrong :(',
+    errorSeverity: 3
+  },
   'SYSTEM_ERROR': {
     httpCode: 500,
     message: 'Oops! Something went wrong :(',

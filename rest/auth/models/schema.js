@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var passportLocalMongoose = require('passport-local-mongoose');
 var Schema = mongoose.Schema;
 
 var AuthSchema = new Schema({
@@ -26,5 +27,7 @@ var AuthSchema = new Schema({
     default: Date.now
   }
 });
+
+AuthSchema.plugin(passportLocalMongoose);
 
 module.exports = AuthSchema;

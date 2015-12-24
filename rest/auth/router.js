@@ -1,7 +1,13 @@
 var handler = require('./handler.js');
 var RouterFactory = require('../../libs/router-factory');
+var authModel = require('./models');
 
 module.exports = function (passport) {
+
+  //var Account = require('./models/account');
+  //passport.use(new LocalStrategy(Account.authenticate()));
+  //passport.serializeUser(Account.serializeUser());
+  //passport.deserializeUser(Account.deserializeUser());
 
   // Set path for collecting validation file :)
   var router = RouterFactory(__dirname);

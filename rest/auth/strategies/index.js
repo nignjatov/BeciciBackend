@@ -35,5 +35,30 @@ module.exports = function (passport) {
     }
   ));
 
+  passport.use('local-login', new LocalStrategy.Strategy(
+    { passReqToCallback: true },
+    function (req, username, password, done) {
+      console.log("herp derp");
+      //authModel.findOne({username: username}, function (err, found) {
+      //  if (err) return done("MONGO_ERROR");
+      //  if (found) return done("AUTH_USERNAME_TAKEN");
+      //
+      //  var auth = new authModel({username: username, passport: password});
+      //  var user = new userModel(req.body); // Check
+      //  // Create User
+      //
+      //  user.save(function (err) {
+      //    if (err) return done("MONGO_ERROR");
+      //    auth.cryptPassword();
+      //    auth.userId = user._id;
+      //    auth.save(function (err) {
+      //      if (err) return done("MONGO_ERROR");
+      //      return done(null, user.toObject());
+      //    });
+      //  });
+      //})
+    }
+  ));
+
   // Social ...
 };

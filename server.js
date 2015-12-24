@@ -45,8 +45,8 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
 
     app.use(express.static(path.join(__dirname, 'storage')));
     // TODO: Setup passport
-    // app.use(passport.initialize());
-    // app.use(passport.session());
+     app.use(passport.initialize());
+     app.use(passport.session());
 
 
 
