@@ -7,7 +7,7 @@ module.exports = {
     return next();
   },
   out: function httpOut (req, res, next) {
-
+    // samo dev logging todo
     res.json(req.payload);
     return next();
   },

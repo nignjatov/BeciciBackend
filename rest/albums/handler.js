@@ -10,7 +10,12 @@ module.exports = (function () {
       });
     },
     createAlbum: function (req, res, next) {
-      var album = new albums(req.body);
+      var toSave = {
+        name: {
+          en_EN: req.body.name
+        }
+      };
+      var album = new albums(toSave);
       return album.save(function (err) {
         if (err) return next("MONGO_ERORR", err);
         return next();
@@ -32,17 +37,14 @@ module.exports = (function () {
     },
     addImage: function (req, res, next) {
       var albumId = req.params.albumId;
-      console.log(req.body.image);
-      console.log(albumId);
-      return next();
-      //return albums.findByIdAndUpdate(albumId,
-      //  {$push: {"images": {img : "testImage"}}},
-      //  {safe: true, upsert: true},
-      //  function(err) {
-      //    console.log(err);
-      //    if (err) return next("MONGO_ERROR", err);
-      //    return next();
-      //  });
+      return albums.findByIdAndUpdate(albumId,
+        {$push: {"images": req.file.filename}},
+        {safe: true, upsert: true},
+        function(err) {
+          console.log(err);
+          if (err) return next("MONGO_ERROR", err);
+          return next();
+        });
     },
     deleteImage: function (req, res, next) {
       var albumId = req.params.albumId;

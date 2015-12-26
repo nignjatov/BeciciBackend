@@ -8,7 +8,7 @@ module.exports = (function () {
   // Set path for collecting validation file :)
   var router = RouterFactory(__dirname);
 
-  router.register("getAlbums", "GET", "/list", [], handler.getAlbums);
+  router.register("getAlbums", "GET", "/list/all", [], handler.getAlbums);
   router.register("createAlbum", "POST", "/", ["admin"], handler.createAlbum);
   router.register("deleteAlbum", "DELETE", "/:albumId", ["admin"], handler.deleteAlbum);
   router.register("renameAlbum", "PATCH", "/:albumId", ["admin"], handler.renameAlbum);

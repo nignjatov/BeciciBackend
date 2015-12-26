@@ -79,8 +79,12 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
         if (err) throw "Module error"; // handle error
 
         // Exit middleware
-        app.use(request.out);
+        //app.use(request.out);
         app.use(request.error);
+
+        app.use('/api/images', express.static(path.join(__dirname, 'storage')));
+
+        // Iz angulara /api/images/avatars/<filename>
 
         return app.listen(3000, function () {
           console.log("App listening on port 3000");
