@@ -13,7 +13,8 @@ var
   bodyParser = require('body-parser'),
   methodOverride = require('method-override'),
   async = require('async'),
-  passport = require('passport');
+  passport = require('passport'),
+  cors = require('cors');
 
 // custom
 var request = require("./libs/request");
@@ -48,7 +49,7 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
      app.use(passport.initialize());
      app.use(passport.session());
 
-
+    app.use(cors())
 
     return fs.readdir(path.join(__dirname, 'rest'), function (err, dirs) {
       if (err) throw err;

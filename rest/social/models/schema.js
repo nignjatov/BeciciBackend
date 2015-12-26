@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var SocialSchema = new Schema({
   network: {
     type: String,
-    enum : ['facebook','twitter','youtube'],
+    enum : ['Facebook','Twitter','Youtube'],
     required: true,
   },
   link: {
@@ -12,7 +12,8 @@ var SocialSchema = new Schema({
   },
   active: {
     type: Boolean,
-    required: true
+    required: true,
+    default: false
   }
 });
 

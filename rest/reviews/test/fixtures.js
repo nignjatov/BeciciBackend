@@ -7,7 +7,7 @@ var async = require('async');
 
 module.exports = function (callback) {
     // generate here
-    var reviews = factory.generateReviews(100);
+    var reviews = factory.generateReviews(10);
     async.each(reviews, function (review, callback) {
         review = new reviewModel(review);
         return review.save(callback);

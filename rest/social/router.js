@@ -8,8 +8,9 @@ module.exports = (function () {
   var router = RouterFactory(__dirname);
 
   router.register("getSocialNetworks", "GET", "/list", [], handler.getSocialNetworks);
-  router.register("createSocialNetwork", "POST", "/list", ["admin"], handler.createSocialNetwork);
-  router.register("updateSocialNetworkActivity", "PATCH", "/:socialId/:active", ["admin"], handler.updateSocialNetworkActivity);
+  router.register("createSocialNetwork", "POST", "/", ["admin"], handler.createSocialNetwork);
+  router.register("updateSocialNetwork", "PATCH", "/:socialId/", ["admin"], handler.updateSocialNetwork);
+  router.register("deleteSocialNetwork", "DELETE", "/:socialId/", ["admin"], handler.deleteSocialNetwork);
 
   return router.getRoutes();
 })();
