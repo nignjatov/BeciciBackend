@@ -1,11 +1,16 @@
 /**
  * Created by orahkokos on 12/14/15.
  */
-var strategies = require('./strategies');
-var router;
+var
+  router,
+  Auth = require('./models'),
+  LocalStrategy = require('passport-local').Strategy;
+
 module.exports = function (passport, callback) {
-  // Load strategies
-  strategies(passport);
+
+  passport.use(new LocalStrategy(Auth.authenticate()));
+  passport.serializeUser(Auth.serializeUser());
+  passport.deserializeUser(Auth.deserializeUser());
 
   router = require('./router')(passport);
 

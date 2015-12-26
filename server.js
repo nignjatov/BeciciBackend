@@ -62,7 +62,7 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
           if (dir == 'auth') {
             restPoint(passport, function (err, router) {
               if (err) return callback("MODULE_ERROR", err);
-              app.use("/" + dir, router);
+              app.use("/api/" + dir, router);
               return callback();
             });
           } else {
@@ -81,7 +81,6 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
         // Exit middleware
         app.use(request.out);
         app.use(request.error);
-
 
         return app.listen(3000, function () {
           console.log("App listening on port 3000");
