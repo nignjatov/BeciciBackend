@@ -10,11 +10,10 @@ var ReviewSchema = new Schema({
   },
   language: {
     type: String,
-    enum : Container.config.languages
+    enum : ['en','rs']
   },
   description: {
-    type: String,
-    maxlength : 300
+    type: String
   },
   status: {
     type: String,

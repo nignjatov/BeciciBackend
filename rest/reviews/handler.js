@@ -5,13 +5,16 @@ module.exports = (function () {
     getReviews: function (req, res, next) {
       return reviews.find({}, function (err, list) {
         if (err) return next("MONGO_ERROR", err);
+        req.payload = list;
         return next(null, list);
       });
     },
     updateReviewStatus: function (req, res, next) {
       var reviewId = req.params.reviewId;
       var status = req.params.status;
-      return reviews.findOneAndModify({_id: reviewId}, {status: status}, function (err) {
+      console.log("ID "+ reviewId);
+      console.log("STATUS "+ status);
+      return reviews.findOneAndUpdate({_id: reviewId}, {status: status}, function (err) {
         if (err) return next("MONGO_ERROR", err);
         return next();
       });

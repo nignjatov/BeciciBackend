@@ -6,7 +6,7 @@ var AlbumSchema = new Schema({
     type: Schema.Types.Mixed,
     required: true
   },
-  images: [ String ],
+  images: [ {img : String}],
   created_at: {
     type: Date,
     default: Date.now

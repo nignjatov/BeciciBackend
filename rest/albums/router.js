@@ -12,7 +12,12 @@ module.exports = (function () {
   router.register("createAlbum", "POST", "/", ["admin"], handler.createAlbum);
   router.register("deleteAlbum", "DELETE", "/:albumId", ["admin"], handler.deleteAlbum);
   router.register("renameAlbum", "PATCH", "/:albumId", ["admin"], handler.renameAlbum);
-  router.register("addImage", "POST", "/:albumId/", ["admin"], handler.addImage);
+  router.register("addImage", "POST", "/:albumId/", ["admin"], handler.addImage,{
+    storage: "/tmp/",
+    type: 'single',
+    name: 'albumImage',
+    options: null
+  });
   router.register("deleteImage", "DELETE", "/:albumId/:image", ["admin"], handler.deleteImage);
 
   return router.getRoutes();

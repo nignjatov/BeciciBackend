@@ -32,13 +32,17 @@ module.exports = (function () {
     },
     addImage: function (req, res, next) {
       var albumId = req.params.albumId;
-      return albums.findByIdAndUpdate(albumId,
-        {$push: {"images": req.body.image}},
-        {safe: true, upsert: true},
-        function(err) {
-          if (err) return next("MONGO_ERROR", err);
-          return next();
-        });
+      console.log(req.body.image);
+      console.log(albumId);
+      return next();
+      //return albums.findByIdAndUpdate(albumId,
+      //  {$push: {"images": {img : "testImage"}}},
+      //  {safe: true, upsert: true},
+      //  function(err) {
+      //    console.log(err);
+      //    if (err) return next("MONGO_ERROR", err);
+      //    return next();
+      //  });
     },
     deleteImage: function (req, res, next) {
       var albumId = req.params.albumId;
