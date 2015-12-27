@@ -5,7 +5,7 @@ module.exports = (function () {
     getUsers: function (req, res, next) {
       return users.find({}, function (err, list) {
         if (err) return next("MONGO_ERROR", err);
-        req.payload = list;
+        res.json(list);
         return next();
       });
     },

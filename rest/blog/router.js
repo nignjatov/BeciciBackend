@@ -8,7 +8,7 @@ module.exports = (function () {
   // Set path for collecting validation file :)
   var router = RouterFactory(__dirname);
 
-  router.register("getBlogs", "GET", "/list", [], handler.getBlogs);
+  router.register("getBlogs", "GET", "/list/:type/all", [], handler.getBlogs);
   router.register("createBlog", "POST", "/", ["admin"], handler.createBlog);
   router.register("deleteBlog", "DELETE", "/:blogId", ["admin"], handler.deleteBlog);
   router.register("updateBlog", "PATCH", "/:blogId", ["admin"], handler.updateBlog);
