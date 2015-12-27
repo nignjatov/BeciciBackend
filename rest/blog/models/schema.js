@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var lastMod = require('../../../libs/last-modified');
 var Schema = mongoose.Schema;
 
 var BlogSchema = new Schema({
@@ -15,7 +16,7 @@ var BlogSchema = new Schema({
     type: Schema.Types.Mixed,
     required: true
   },
-  multimedia: Schema.Types.Mixed, //file hash + type: img/video
+  multimedia: String,
   moment: {
     type: Date
   },
@@ -23,10 +24,9 @@ var BlogSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  last_modified: {
-    type: Date,
-    default: Date.now
-  }
 });
+
+
+BlogSchema.plugin(lastMod);
 
 module.exports = BlogSchema;

@@ -12,7 +12,12 @@ module.exports = (function () {
   router.register("createBlog", "POST", "/", ["admin"], handler.createBlog);
   router.register("deleteBlog", "DELETE", "/:blogId", ["admin"], handler.deleteBlog);
   router.register("updateBlog", "PATCH", "/:blogId", ["admin"], handler.updateBlog);
-
+  router.register("addImage", "POST", "/:blogId/", ["admin"], handler.addBlogImage,{
+    storage: "images",
+    type: 'single',
+    name: 'image',
+    options: null
+  });
   return router.getRoutes();
 
 })();

@@ -35,6 +35,17 @@ module.exports = (function () {
         res.json({_id: blogId});
         return next();
       });
+    },
+    addBlogImage: function (req, res, next) {
+      var blogId = req.params.blogId;
+      var update = {multimedia: req.file.filename};
+      return blogs.findOneAndUpdate({_id : blogId}, update,
+        function (err) {
+          if (err) return next("MONGO_ERROR", err);
+          res.json({_id: blogId,
+                    filename : req.file.filename});
+          return next();
+        });
     }
   }
 })();

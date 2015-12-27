@@ -10,6 +10,10 @@ var RoomSchema = new Schema({
     type: Schema.Types.Mixed,
     required: true
   },
+  description: {
+    type: Schema.Types.Mixed,
+    required: true
+  },
   image: String,
   available: [{
     from: {
@@ -31,8 +35,7 @@ var RoomSchema = new Schema({
   },
   bed_number: Number,
   free_services: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Service'
+    type: Schema.Types.Mixed
   }],
   created_at: {
     type: Date,

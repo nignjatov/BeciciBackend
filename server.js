@@ -49,7 +49,7 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
      app.use(passport.initialize());
      app.use(passport.session());
 
-    app.use(cors())
+    app.use(cors());
 
     return fs.readdir(path.join(__dirname, 'rest'), function (err, dirs) {
       if (err) throw err;
@@ -78,11 +78,13 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
       }, function (err) {
         if (err) throw "Module error"; // handle error
 
+        app.use('/api/images', express.static(path.join(__dirname, 'storage')));
+
         // Exit middleware
         //app.use(request.out);
         app.use(request.error);
 
-        app.use('/api/images', express.static(path.join(__dirname, 'storage')));
+
 
         // Iz angulara /api/images/avatars/<filename>
 

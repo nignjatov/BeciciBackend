@@ -6,18 +6,24 @@ module.exports = (function () {
       return albums.find({}, function (err, list) {
         if (err) return next("MONGO_ERROR", err);
         if (!list) return next("NOT_FOUND");
+        res.json(list);
+        return next(null, list);
+      });
+    },
+    getAlbumById: function (req, res, next) {
+      var albumId = req.params.albumId;
+      return albums.find({_id: albumId}, function (err, list) {
+        if (err) return next("MONGO_ERROR", err);
+        if (!list) return next("NOT_FOUND");
+        res.json(list);
         return next(null, list);
       });
     },
     createAlbum: function (req, res, next) {
-      var toSave = {
-        name: {
-          en_EN: req.body.name
-        }
-      };
-      var album = new albums(toSave);
+      var album = new albums(req.body);
       return album.save(function (err) {
         if (err) return next("MONGO_ERORR", err);
+        res.json(album);
         return next();
       });
     },
@@ -25,33 +31,38 @@ module.exports = (function () {
       var albumId = req.params.albumId;
       return albums.findOneAndRemove({_id: albumId}, function (err) {
         if (err) return next("MONGO_ERROR", err);
+        res.json({_id: albumId});
         return next();
       });
     },
     renameAlbum: function (req, res, next) {
       var albumId = req.params.albumId;
-      return albums.findOneAndModify({_id: albumId}, {name: req.body.name}, function (err) {
+      return albums.findOneAndUpdate({_id: albumId}, {name: req.body.name}, function (err) {
         if (err) return next("MONGO_ERROR", err);
+        res.json({_id: albumId});
         return next();
       });
     },
     addImage: function (req, res, next) {
       var albumId = req.params.albumId;
-      return albums.findByIdAndUpdate(albumId,
-        {$push: {"images": req.file.filename}},
-        {safe: true, upsert: true},
-        function(err) {
-          console.log(err);
+      albums.findById(albumId, function (err, album) {
+        if (err) return next("MONGO_ERROR", err);
+
+        album.images.push(req.file.filename);
+        album.save(function (err) {
           if (err) return next("MONGO_ERROR", err);
-          return next();
         });
+      });
+      res.json({id: albumId, filename: req.file.filename});
+      return next();
     },
     deleteImage: function (req, res, next) {
       var albumId = req.params.albumId;
       return albums.findByIdAndUpdate(albumId,
         {$pull: {"images": req.params.image}},
-        function(err) {
+        function (err) {
           if (err) return next("MONGO_ERROR", err);
+          res.json({id: albumId})
           return next();
         });
     }

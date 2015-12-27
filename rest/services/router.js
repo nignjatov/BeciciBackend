@@ -12,6 +12,12 @@ module.exports = (function () {
   router.register("createService", "POST", "/", ["admin"], handler.createService);
   router.register("deleteService", "DELETE", "/:serviceId", ["admin"], handler.deleteService);
   router.register("updateService", "PATCH", "/:serviceId", ["admin"], handler.updateService);
+  router.register("addImage", "POST", "/:serviceId", ["admin"], handler.addServiceImage,{
+    storage: "images",
+    type: 'single',
+    name: 'image',
+    options: null
+  });
 
   return router.getRoutes();
 })();

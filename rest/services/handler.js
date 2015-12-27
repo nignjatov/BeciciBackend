@@ -48,6 +48,20 @@ module.exports = (function () {
         res.json({_id: serviceId});
         return next();
       });
+    },
+    addServiceImage: function (req, res, next) {
+      var serviceId = req.params.serviceId;
+      var update    = {image: req.file.filename};
+      //TODO remove old image
+      return services.findOneAndUpdate({_id: serviceId}, update,
+        function (err) {
+          if (err) return next("MONGO_ERROR", err);
+          res.json({
+            _id: serviceId,
+            filename: req.file.filename
+          });
+          return next();
+        });
     }
   }
 })();
