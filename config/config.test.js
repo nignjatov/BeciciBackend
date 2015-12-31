@@ -13,6 +13,9 @@ module.exports = {
     port: ":27017",
     db: "/test_becici"
   },
+  email: {
+    fromAddress: "example@becici.com"
+  },
   logger: {
     loggerPath: {
       error: path.join(__dirname, 'logs', 'error.log'),

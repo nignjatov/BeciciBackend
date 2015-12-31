@@ -13,6 +13,7 @@ var
   bodyParser = require('body-parser'),
   methodOverride = require('method-override'),
   async = require('async'),
+  cookieParser = require('cookie-parser'),
   passport = require('passport'),
   cors = require('cors');
 
@@ -32,9 +33,11 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
 
   world.init(function () {
 
-    app.use(methodOverride());
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
+
+    app.use(methodOverride());
+    app.use(cookieParser('test'));
 
     app.use(request.in);
     app.use(session({
@@ -44,10 +47,8 @@ mongoose.connect(Container.config.mongodb.host + Container.config.mongodb.port +
       saveUninitialized: false
     }));
 
-    app.use(express.static(path.join(__dirname, 'storage')));
-    // TODO: Setup passport
-     app.use(passport.initialize());
-     app.use(passport.session());
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     app.use(cors());
 

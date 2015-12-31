@@ -9,8 +9,7 @@ var AuthSchema = new Schema({
     unique: true
   },
   password: {
-    type: String,
-    required: true
+    type: String
   },
   role: {
     type: String,
@@ -21,6 +20,10 @@ var AuthSchema = new Schema({
   userId: {
     type: Schema.ObjectId,
     ref: 'user'
+  },
+  active: {
+    type: Boolean,
+    default: false
   },
   created_at: {
     type: Date,

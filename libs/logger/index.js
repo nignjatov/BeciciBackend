@@ -5,6 +5,6 @@ var
 
 module.exports = {
   log: function (req) {
-    winston.info(chalk.green(req.url, JSON.stringify(req.params, null, 2), JSON.stringify(req.body, null, 2)));
+    winston.info(chalk.green(req.originalMethod, req.url, JSON.stringify(req.params, null, 2), JSON.stringify(req.body, null, 2)));
   }
 }
