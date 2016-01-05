@@ -2,6 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ContactSchema = new Schema({
+  title: {
+    type: String
+  },
   phone: {
     type: String
   },

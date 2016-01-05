@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var BlogSchema = new Schema({
   blogType: {
     type: String,
-    enum: ["news","about","timeline"],
+    enum: ["news","about","timeline","banner"],
     required: true
   },
   title: {
