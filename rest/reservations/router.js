@@ -7,7 +7,7 @@ module.exports = (function () {
   // Set path for collecting validation file :)
   var router = RouterFactory(__dirname);
 
-  router.register("getReservations", "GET", "/list", [], handler.getReservations);
+  router.register("getReservations", "GET", "/list/all", [], handler.getReservations);
   router.register("createReservation", "POST", "/list", ["user"], handler.createReservation);
   router.register("updateReservationStatus", "PATCH", "/:reservationId/:status", ["admin"], handler.updateReservationStatus);
   router.register("deleteReservation", "DELETE", "/:reservationId", ["admin"], handler.deleteReservation);

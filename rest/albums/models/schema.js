@@ -10,7 +10,17 @@ var AlbumSchema = new Schema({
   created_at: {
     type: Date,
     default: Date.now
+  },
+  last_modified: {
+    type: Date,
+    default: Date.now
   }
+});
+
+AlbumSchema.pre('save', function(next){
+  now = new Date();
+  this.last_modified = now;
+  next();
 });
 
 module.exports = AlbumSchema;

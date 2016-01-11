@@ -24,9 +24,16 @@ var BlogSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  last_modified: {
+    type: Date
+  }
 });
 
 
-BlogSchema.plugin(lastMod);
+BlogSchema.pre('save', function(next){
+  now = new Date();
+  this.last_modified = now;
+  next();
+});
 
 module.exports = BlogSchema;

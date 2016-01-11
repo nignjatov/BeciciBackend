@@ -43,8 +43,13 @@ var RoomSchema = new Schema({
   },
   last_modified: {
     type: Date,
-    default: Date.now
   }
+});
+
+RoomSchema.pre('save', function(next){
+  now = new Date();
+  this.last_modified = now;
+  next();
 });
 
 module.exports = RoomSchema;

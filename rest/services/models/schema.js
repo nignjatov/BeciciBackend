@@ -20,9 +20,13 @@ var ServiceSchema = new Schema({
     default: Date.now
   },
   last_modified: {
-    type: Date,
-    default: Date.now
+    type: Date
   }
 });
 
+ServiceSchema.pre('save', function(next){
+  now = new Date();
+  this.last_modified = now;
+  next();
+});
 module.exports = ServiceSchema;

@@ -7,7 +7,7 @@ module.exports = (function () {
   // Set path for collecting validation file :)
   var router = RouterFactory(__dirname);
 
-  router.register("getSocialNetworks", "GET", "/list", [], handler.getSocialNetworks);
+  router.register("getSocialNetworks", "GET", "/list/all", [], handler.getSocialNetworks);
   router.register("createSocialNetwork", "POST", "/", ["admin"], handler.createSocialNetwork);
   router.register("updateSocialNetwork", "PATCH", "/:socialId/", ["admin"], handler.updateSocialNetwork);
   router.register("deleteSocialNetwork", "DELETE", "/:socialId/", ["admin"], handler.deleteSocialNetwork);

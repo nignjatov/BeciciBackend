@@ -7,12 +7,12 @@ var constants = require('./config/constants.js');
 
 module.exports = {
   init: function (callback) {
-    if (!process.env.EMAIL_PASSWORD) {
-      throw "Please setup EMAIL_PASSWORD in process env ( see email config )"
-    }
-    if (!process.env.EMAIL_USER) {
-      throw "Please setup EMAIL_USER in process env ( see email config )"
-    }
+    //if (!process.env.EMAIL_PASSWORD) {
+    //  throw "Please setup EMAIL_PASSWORD in process env ( see email config )"
+    //}
+    //if (!process.env.EMAIL_USER) {
+    //  throw "Please setup EMAIL_USER in process env ( see email config )"
+    //}
     // Load constants
     Container.path = constants;
 
