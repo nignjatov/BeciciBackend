@@ -2,6 +2,14 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ReviewSchema = new Schema({
+  fullName:{
+    type : String,
+    required: true
+  },
+  revEmail:{
+    type : String,
+    required: true
+  },
   stars: {
     type: Number,
     required: true,
@@ -17,7 +25,8 @@ var ReviewSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['waiting', 'approved', 'rejected', 'archived'],
+    enum: ['waiting', 'approved', 'rejected'],
+    default: 'waiting',
     required: true
   },
   created_at: {

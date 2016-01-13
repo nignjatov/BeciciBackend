@@ -31,8 +31,9 @@ module.exports = (function () {
     createReview: function (req, res, next) {
       var review = new reviews(req.body);
       return review.save(function (err) {
+        console.log(err);
         if (err) return next("MONGO_ERORR", err);
-        res.json({_id: reviewId});
+        res.json(review);
         return next();
       });
     }
