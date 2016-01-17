@@ -14,6 +14,18 @@ var RoomSchema = new Schema({
     type: Schema.Types.Mixed,
     required: true
   },
+  child_discount: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 100
+  },
+  child_bed_discount: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 100
+  },
   image: String,
   available: [{
     from: {
@@ -27,13 +39,14 @@ var RoomSchema = new Schema({
     amount: {
       type: Number,
       required: true
-    }
+    },
+    price: {
+      type: Number,
+      required: true
+    },
   }],
-  price: {
-    type: Number,
-    required: true
-  },
   bed_number: Number,
+  big_bed : Boolean,
   free_services: [{
     type: Schema.Types.Mixed
   }],
