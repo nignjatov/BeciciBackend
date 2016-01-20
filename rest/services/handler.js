@@ -32,7 +32,7 @@ module.exports = (function () {
         var update = {
           title: req.body.title,
           description: req.body.description,
-          //TODO image
+          last_modified : req.body.last_modified
         }
       }
       return services.findOneAndUpdate({_id: serviceId}, update, function (err) {

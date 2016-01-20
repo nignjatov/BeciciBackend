@@ -12,8 +12,7 @@ var AlbumSchema = new Schema({
     default: Date.now
   },
   last_modified: {
-    type: Date,
-    default: Date.now
+    type: Date
   }
 });
 

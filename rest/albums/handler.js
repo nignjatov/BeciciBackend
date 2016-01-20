@@ -37,7 +37,7 @@ module.exports = (function () {
     },
     renameAlbum: function (req, res, next) {
       var albumId = req.params.albumId;
-      return albums.findOneAndUpdate({_id: albumId}, {name: req.body.name}, function (err) {
+      return albums.findOneAndUpdate({_id: albumId}, {name: req.body.name,last_modified : req.body.last_modified}, function (err) {
         if (err) return next("MONGO_ERROR", err);
         res.json({_id: albumId});
         return next();
