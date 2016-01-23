@@ -8,7 +8,7 @@ module.exports = (function () {
   var router = RouterFactory(__dirname);
 
   router.register("getReservations", "GET", "/list/all", [], handler.getReservations);
-  router.register("createReservation", "POST", "/list", ["user"], handler.createReservation);
+  router.register("createReservation", "POST", "/", ["user"], handler.createReservation);
   router.register("updateReservationStatus", "PATCH", "/:reservationId/:status", ["admin"], handler.updateReservationStatus);
   router.register("deleteReservation", "DELETE", "/:reservationId", ["admin"], handler.deleteReservation);
 
