@@ -1,4 +1,7 @@
 var contacts = require("./models");
+var async = require('async');
+var path = require('path');
+var email = require(path.join(Container.path.LIBS_PATH, 'email'));
 
 module.exports = (function () {
   return {
@@ -7,6 +10,26 @@ module.exports = (function () {
         if (err) return next("MONGO_ERROR", err);
         res.json(list);
         return next(null, list);
+      });
+    },
+    message: function (req, res, next) {
+      return contacts.findOne({}, function (err, contact) {
+        if (err) return next("MONGO_ERROR", err);
+        async.each(contact.email, function (email, callback) {
+          return Container.email.send('contact',
+              {
+                replyTo: req.body.replyTo,
+                name: req.body.name,
+                subject: req.body.subject,
+                message: req.body.message
+              },
+                email,
+                callback);
+          }, function (err) {
+            if (err) return next("EMAIL_ERROR");
+            res.sendStatus(200);
+            return next();
+          });
       });
     },
     updateContactInfo: function (req, res, next) {

@@ -23,5 +23,10 @@ module.exports = {
     httpCode: 500,
     message: 'Wrong file format!',
     errorSeverity: 2
+  },
+  'EMAIL_ERROR': {
+    httpCode: 500,
+    message: 'Wrong file format!',
+    errorSeverity: 2
   }
 };

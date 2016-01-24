@@ -2,6 +2,25 @@ module.exports = {
   "getContactInfo": {
     "schema": {}
   },
+  "sendEmailMessage": {
+    "schema": {
+      "body": {
+        replyTo: {
+          type: String,
+          match: /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+        },
+        name: {
+          type: String
+        },
+        subject: {
+          type: String
+        },
+        message: {
+          type: String
+        }
+      }
+    }
+  },
   "updateContactInfo": {
     "schema": {
       "params": {

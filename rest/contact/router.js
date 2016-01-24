@@ -8,6 +8,7 @@ module.exports = (function () {
   var router = RouterFactory(__dirname);
 
   router.register("getContactInfo", "GET", "/list/all", [], handler.getContactInfo);
+  router.register("sendEmailMessage", "POST", "/message", [], handler.message);
   router.register("createContactInfo", "POST", "/", ["admin"], handler.createContactInfo);
   router.register("updateContactInfo", "PATCH", "/:contactId", ["admin"], handler.updateContactInfo);
 

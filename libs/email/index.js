@@ -12,7 +12,13 @@ module.exports = {
   init: function () {
     _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
 
-    this.email = email.server.connect(config);
+    this.email = email.server.connect({
+      user:    Container.credentials.EMAIL_HOSTNAME, 
+      password:Container.credentials.EMAIL_PASSWORD, 
+      host:    Container.credentials.EMAIL_HOST, 
+      ssl:     true,
+      port:    465
+    });
 
     fs.readdir(path.join(__dirname, 'templates'), function (err, templates) {
       if (err) throw err;
@@ -28,16 +34,30 @@ module.exports = {
     fs.readFile(path.join(__dirname, 'templates', type + '.html'), function (err, data) {
       var msg = _.template(data);
       msg = msg(payload);
-      var msg = {
-        from: config.user,
-        to: toAddress,
-        subject: "Make config for this",
-        text: msg,
-        attachment: [
-          { data:msg, alternative:true }
-        ]
-      };
-      this.email.send(msg, callback);
+      if (type == 'contact') {
+        var msg = {
+          from: Container.credentials.EMAIL_HOSTNAME,
+          'reply-to': payload.replyTo,
+          to: toAddress,
+          subject: payload.subject,
+          text: msg,
+          attachment: [
+            { data:msg, alternative:true }
+          ]
+        };
+      } else {
+        var msg = {
+          from: Container.credentials.EMAIL_HOSTNAME,
+          to: toAddress,
+          subject: "Make config for this",
+          text: msg,
+          attachment: [
+            { data:msg, alternative:true }
+          ]
+        };  
+      }
+      
+      return this.email.send(msg, callback);
     }.bind(this))
   }
 };
