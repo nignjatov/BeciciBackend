@@ -7,6 +7,9 @@ var constants = require('./config/constants.js');
 
 module.exports = {
   init: function (callback) {
+    if (!process.env.INTESA_TOKEN) {
+     throw "Set security token for Intesa payment gateway";
+    }
     //if (!process.env.EMAIL_PASSWORD) {
     //  throw "Please setup EMAIL_PASSWORD in process env ( see email config )"
     //}

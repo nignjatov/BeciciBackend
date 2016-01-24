@@ -26,9 +26,14 @@ module.exports = (function () {
       });
     },
     createReservation: function (req, res, next) {
+
+      // token for security
       var options = {
         url: 'http://194.106.182.81/test_app/checkout',
         method: 'POST',
+        headers: {
+          token: process.env.INTESA_TOKEN
+        },
         form: req.body
       }
       return request(options, function (err, response, body) {

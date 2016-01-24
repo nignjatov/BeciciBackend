@@ -20,6 +20,8 @@ var
 // custom
 var request = require("./libs/request");
 var world = require("./world.js");
+require('dotenv').config();
+
 
 var app = express();
 global.Container = {};
