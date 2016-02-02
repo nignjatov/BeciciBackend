@@ -11,10 +11,21 @@ module.exports = (function () {
       });
     },
     updateReservationStatus: function (req, res, next) {
-      var paymentId = req.body.paymentId;
-      var action = req.body.action;
-      return reservations.findOneAndModify({_id: reservationId}, {status: status}, function (err) {
-        if (err) return next("MONGO_ERROR", err);
+      var paymentId = req.params.paymentId;
+      var action = req.params.action;
+      var options = {
+        url: 'http://194.106.182.81/test_app/' + action,
+        method: 'POST',
+        headers: {
+          token: process.env.INTESA_TOKEN
+        },
+        form: {
+          paymentId: paymentId
+        }
+      }
+      return request(options, function (err, response, body) {
+        if (err) return next(err);
+        res.sendStatus(200);
         return next();
       });
     },
