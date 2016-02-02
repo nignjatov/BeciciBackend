@@ -9,7 +9,7 @@ module.exports = (function () {
 
   router.register("getReservations", "GET", "/list/all", [], handler.getReservations);
   router.register("createReservation", "POST", "/", ["user"], handler.createReservation);
-  router.register("updateReservationStatus", "PATCH", "/:reservationId/:status", ["admin"], handler.updateReservationStatus);
+  router.register("updateReservationStatus", "PATCH", "/:paymentId/:status", ["admin"], handler.updateReservationStatus);
   router.register("deleteReservation", "DELETE", "/:reservationId", ["admin"], handler.deleteReservation);
 
   return router.getRoutes();
