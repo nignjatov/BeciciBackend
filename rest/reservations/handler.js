@@ -12,7 +12,7 @@ module.exports = (function () {
     },
     updateReservationStatus: function (req, res, next) {
       var paymentId = req.params.paymentId;
-      var action = req.params.action;
+      var action = req.params.status;
       var options = {
         url: 'http://194.106.182.81/test_app/' + action,
         method: 'POST',
@@ -25,7 +25,7 @@ module.exports = (function () {
       }
       return request(options, function (err, response, body) {
         if (err) return next(err);
-        res.sendStatus(200);
+        res.sendStatus(response.statusCode);
         return next();
       });
     },
