@@ -57,7 +57,7 @@ module.exports = {
         };  
       }
       
-      return this.email.send(msg, callback);
+      return this.email.send(msg, callback); // handle error
     }.bind(this))
   }
 };
