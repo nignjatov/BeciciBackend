@@ -58,7 +58,6 @@ module.exports = (function () {
                   }
                 );
               })
-              
             });
           });
         })
@@ -76,8 +75,31 @@ module.exports = (function () {
         }
         return request(options, function (err, response, body) {
           if (err) return next(err);
-          res.sendStatus(200);
-          return next();
+          Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
+            if (err) return next('MONGO_ERROR');
+            if (!found) return next('ROOM_NOT_FOUND');
+            var termin = _.find(found.available, function (ter) {
+              if (ter._id == req.body.order.termin){
+                return true
+              }
+              return false;
+            });
+            Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
+              return Container.email.send('cancel', 
+                  {
+                    reservation: JSON.stringify(reservation, null, 2), 
+                    room: JSON.stringify(found, null, 2), 
+                    termin: JSON.stringify(termin, null, 2)
+                  }, 
+                  req.body.email, 
+                  function (err) {
+                    if (err) return next(err);
+                    res.sendStatus(200);
+                    return next();    
+                  }
+                );
+              });
+            });
         });
       }
     },
@@ -101,6 +123,10 @@ module.exports = (function () {
       return request(options, function (err, response, body) {
         if (err) return next(err);
         res.json(JSON.parse(body));
+        // Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
+        //   if (err) return next('MONGO_ERROR');
+        //   if (!found) return next('ROOM_NOT_FOUND');
+        // });
         return next();
       })
     }
