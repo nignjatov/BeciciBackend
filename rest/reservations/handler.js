@@ -41,8 +41,24 @@ module.exports = (function () {
             if (err) return next(err);
             return found.save(function (err) {
               if (err) return next('MONGO_ERROR');
-              res.sendStatus(200);
-              return next();
+              Container.model['reservations'].findOne({_id: paymentId}, function (err, reservation) {
+                if (err) return next('MONGO_ERROR');
+                if (!found) return next('RESERVATION_NOT_FOUND'); // zavesti
+                return Container.email.send('capture', 
+                  {
+                    reservation: JSON.stringify(reservation, null, 2), 
+                    room: JSON.stringify(found, null, 2), 
+                    termin: JSON.stringify(termin, null, 2)
+                  }, 
+                  req.body.email, 
+                  function (err) {
+                    if (err) return next(err);
+                    res.sendStatus(200);
+                    return next();    
+                  }
+                );
+              })
+              
             });
           });
         })
