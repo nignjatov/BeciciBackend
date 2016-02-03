@@ -1,5 +1,6 @@
-var reservations = require("./models");
+var Reservation = require("./models");
 var request = require('request');
+var _ = require('lodash');
 
 module.exports = (function () {
   return {
@@ -13,21 +14,52 @@ module.exports = (function () {
     updateReservationStatus: function (req, res, next) {
       var paymentId = req.params.paymentId;
       var action = req.params.action;
-      var options = {
-        url: 'http://194.106.182.81/test_app/' + action,
-        method: 'POST',
-        headers: {
-          token: process.env.INTESA_TOKEN
-        },
-        form: {
-          paymentId: paymentId
+
+      if (action == 'capture') {
+        Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
+          if (err) return next('MONGO_ERROR');
+          if (!found) return next('ROOM_NOT_FOUND');
+          var termin = _.find(found.available, {'_id': req.body.order.termin});
+          if (--termin.remained) return next('ROOM_NOT_AVAILABLE');
+          var options = {
+            url: 'http://194.106.182.81/test_app/' + action,
+            method: 'POST',
+            headers: {
+              token: process.env.INTESA_TOKEN
+            },
+            form: {
+              paymentId: paymentId
+            }
+          }
+          return request(options, function (err, response, body) {
+            if (err) return next(err);
+            return found.save(function (err) {
+              if (err) return next('MONGO_ERROR');
+              res.sendStatus(200);    
+              return next();
+            });
+          });
+        })
+      } else {
+        // cancel
+        var options = {
+          url: 'http://194.106.182.81/test_app/' + action,
+          method: 'POST',
+          headers: {
+            token: process.env.INTESA_TOKEN
+          },
+          form: {
+            paymentId: paymentId
+          }
         }
+        return request(options, function (err, response, body) {
+          if (err) return next(err);
+          res.sendStatus(200);
+          return next();
+        });
       }
-      return request(options, function (err, response, body) {
-        if (err) return next(err);
-        res.sendStatus(200);
-        return next();
-      });
+
+      
     },
     deleteReservation: function (req, res, next) {
       var reservationId = req.params.reservationId;
@@ -37,7 +69,6 @@ module.exports = (function () {
       });
     },
     createReservation: function (req, res, next) {
-
       // token for security
       var options = {
         url: 'http://194.106.182.81/test_app/checkout',
