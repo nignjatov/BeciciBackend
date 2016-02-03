@@ -41,7 +41,7 @@ module.exports = (function () {
             if (err) return next(err);
             return found.save(function (err) {
               if (err) return next('MONGO_ERROR');
-              Container.model['reservations'].findOne({_id: paymentId}, function (err, reservation) {
+              Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
                 if (err) return next('MONGO_ERROR');
                 if (!found) return next('RESERVATION_NOT_FOUND'); // zavesti
                 return Container.email.send('capture', 

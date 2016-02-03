@@ -57,7 +57,10 @@ module.exports = {
         };  
       }
       
-      return this.email.send(msg, callback); // handle error
+      return this.email.send(msg, function (err) {
+        if (err) return callback('EMAIL_SEND_ERROR');
+        return callback(null);
+      });
     }.bind(this))
   }
 };
