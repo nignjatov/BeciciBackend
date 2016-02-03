@@ -13,7 +13,7 @@ module.exports = (function () {
     },
     updateReservationStatus: function (req, res, next) {
       var paymentId = req.params.paymentId;
-      var action = req.params.action;
+      var action = req.params.status;
 
       if (action == 'capture') {
         Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
@@ -35,7 +35,7 @@ module.exports = (function () {
             if (err) return next(err);
             return found.save(function (err) {
               if (err) return next('MONGO_ERROR');
-              res.sendStatus(200);    
+              res.sendStatus(200);
               return next();
             });
           });
@@ -58,8 +58,6 @@ module.exports = (function () {
           return next();
         });
       }
-
-      
     },
     deleteReservation: function (req, res, next) {
       var reservationId = req.params.reservationId;
