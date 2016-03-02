@@ -61,8 +61,9 @@ module.exports = (function () {
             });
           });
         })
-      } else {
-        // cancel
+      } 
+      if (action == 'reject') {
+        // reject
         var options = {
           url: 'http://194.106.182.81/test_app/' + action,
           method: 'POST',
@@ -85,7 +86,7 @@ module.exports = (function () {
               return false;
             });
             Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
-              return Container.email.send('cancel', 
+              return Container.email.send('reject', 
                   {
                     reservation: JSON.stringify(reservation, null, 2), 
                     room: JSON.stringify(found, null, 2), 
@@ -102,6 +103,49 @@ module.exports = (function () {
             });
         });
       }
+
+      if (action == 'cancel') {
+          var options = {
+            url: 'http://194.106.182.81/test_app/' + action,
+            method: 'POST',
+            headers: {
+              token: process.env.INTESA_TOKEN
+            },
+            form: {
+              paymentId: paymentId
+            }
+          }
+          return request(options, function (err, response, body) {
+            if (err) return next(err);
+            Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
+              var termin = _.find(found.available, function (ter) {
+                if (ter._id == req.body.order.termin){
+                  return true
+                }
+                return false;
+              }); 
+              termin.remained++;
+              return found.save(function (err) {
+                if (err) return next('MONGO_ERROR');
+                Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
+                  return Container.email.send('cancel', 
+                    {
+                      reservation: JSON.stringify(reservation, null, 2), 
+                      room: JSON.stringify(found, null, 2), 
+                      termin: JSON.stringify(termin, null, 2)
+                    }, 
+                    req.body.email, 
+                    function (err) {
+                      if (err) return next(err);
+                      res.sendStatus(200);
+                      return next();    
+                    }
+                  );  
+                });
+              });
+            });
+          });
+      } 
     },
     deleteReservation: function (req, res, next) {
       var reservationId = req.params.reservationId;
