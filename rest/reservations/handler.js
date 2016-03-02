@@ -18,7 +18,7 @@ module.exports = (function () {
 
       if (action == 'capture') {
         Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
-          if (reservation.status == 'INIT') {
+          if (reservation && reservation.status == 'INIT') {
             Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
               if (err) return next('MONGO_ERROR');
               if (!found) return next('ROOM_NOT_FOUND');
@@ -63,6 +63,8 @@ module.exports = (function () {
                 });
               });
             })    
+          } else {
+            return next('OPERATION_NOT_ALLOWED')
           }
         });
       } 
