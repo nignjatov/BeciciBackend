@@ -18,7 +18,7 @@ module.exports = (function () {
 
       if (action == 'capture') {
         Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
-          if (reservation && reservation.status == 'INIT') {
+          if (reservation && reservation.status == 'APPROVED') {
             Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
               if (err) return next('MONGO_ERROR');
               if (!found) return next('ROOM_NOT_FOUND');
