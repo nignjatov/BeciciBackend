@@ -1,5 +1,6 @@
 var Reservation = require("./models");
 var request = require('request');
+var moment = require('moment');
 var _ = require('lodash');
 var ObjectId = require('mongoose').Types.ObjectId;
 
@@ -40,7 +41,7 @@ module.exports = (function () {
                 }
               }
               return request(options, function (err, response, body) {
-                if (err) return next(err);
+                if (err || response.statusCode != 200) return next(body);
                 return found.save(function (err) {
                   if (err) return next('MONGO_ERROR');
                   Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
@@ -83,7 +84,7 @@ module.exports = (function () {
               }
             }
             return request(options, function (err, response, body) {
-              if (err) return next(err);
+              if (err || response.statusCode != 200) return next(body);
               Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
                 if (err) return next('MONGO_ERROR');
                 if (!found) return next('ROOM_NOT_FOUND');
@@ -115,45 +116,62 @@ module.exports = (function () {
       }
 
       if (action == 'cancel') {
+        // var moment = require('moment')
+        // var startDate = moment('2013-5-11 8:73:18', 'YYYY-M-DD HH:mm:ss')
+        // var endDate = moment('2013-5-11 10:73:18', 'YYYY-M-DD HH:mm:ss')
+        // var secondsDiff = endDate.diff(startDate, 'seconds')
+        // console.log(secondsDiff)
         Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
+          if (err) return next('MONGO_ERROR');
+          if (!reservation) return next('RESERVATION_NOT_FOUND');
           if (reservation && reservation.status == 'CAPTURED') {
-            var options = {
-              url: 'http://194.106.182.81/test_app/' + action,
-              method: 'POST',
-              headers: {
-                token: process.env.INTESA_TOKEN
-              },
-              form: {
-                paymentId: paymentId
-              }
-            }
-            return request(options, function (err, response, body) {
-              if (err) return next(body);
-              Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
-                var termin = _.find(found.available, function (ter) {
+            Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
+              if (err) return next('MONGO_ERROR');
+              if (!found) return next('ROOM_NOT_FOUND');
+              var now = moment();
+              // termin.from
+              var termin = _.find(found.available, function (ter) {
                   if (ter._id == req.body.order.termin){
                     return true
                   }
                   return false;
-                }); 
-                termin.remained++;
-                return found.save(function (err) {
-                  if (err) return next('MONGO_ERROR');
-                  
-                    return Container.email.send('cancel', 
-                      {
-                        reservation: JSON.stringify(reservation, null, 2), 
-                        room: JSON.stringify(found, null, 2), 
-                        termin: JSON.stringify(termin, null, 2)
-                      }, 
-                      req.body.email, 
-                      function (err) {
-                        if (err) return next(err);
-                        res.sendStatus(200);
-                        return next();    
-                      }
-                    );
                 });
+              var then = moment(termin.from);
+              var diff = then.diff(now, 'days');
+              if (parseInt(diff) < 0) {
+                return next('RESERVATION_INVALID_DATE')
+              }
+
+              var options = {
+                url: 'http://194.106.182.81/test_app/' + action,
+                method: 'POST',
+                headers: {
+                  token: process.env.INTESA_TOKEN
+                },
+                form: {
+                  paymentId: paymentId
+                }
+              }
+              return request(options, function (err, response, body) {
+                if (err || response.statusCode != 200) return next(body);
+                  termin.remained++;
+                  return found.save(function (err) {
+                    if (err) return next('MONGO_ERROR');
+                    
+                      return Container.email.send('cancel', 
+                        {
+                          reservation: JSON.stringify(reservation, null, 2), 
+                          room: JSON.stringify(found, null, 2), 
+                          termin: JSON.stringify(termin, null, 2)
+                        }, 
+                        req.body.email, 
+                        function (err) {
+                          if (err) return next(err);
+                          res.sendStatus(200);
+                          return next();    
+                        }
+                      );
+                  });
               });
             });
           } else {
