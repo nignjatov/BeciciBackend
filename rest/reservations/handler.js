@@ -128,7 +128,7 @@ module.exports = (function () {
               }
             }
             return request(options, function (err, response, body) {
-              if (err) return next(err);
+              if (err) return next(body);
               Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
                 var termin = _.find(found.available, function (ter) {
                   if (ter._id == req.body.order.termin){
