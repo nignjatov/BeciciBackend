@@ -29,5 +29,18 @@ module.exports = {
     "en", "rs"
   ],
   errorCodes: {},
-  validation: {}
+  validation: {},
+  fees: {
+    enabled: true,
+    dateType: 'days',
+    amounts: {
+      '45': 0.05,
+      '30': 0.1,
+      '20': 0.2,
+      '15': 0.4,
+      '10': 0.8,
+      '6': 0.9,
+      '0': 1
+    }
+  }
 };

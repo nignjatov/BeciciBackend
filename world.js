@@ -48,6 +48,29 @@ module.exports = {
     Container.email = require(path.join(Container.path.LIBS_PATH, 'email'));
     Container.email.init();
 
+    // Load fees
+    if (Container.config.fees && Container.config.fees.enabled) {
+      var i = 0;
+      var fees = [];
+      Container.config.fees.amounts = _.orderBy(Container.config.fees.amounts, ['diff'], ['asc']);
+      var feeRange = [];
+      var startFrom = 0;
+      Container.fees = {
+        'dateType': Container.config.fees.dateType,
+        'maxFee': Container.config.fees.amounts.pop().fee
+      }
+
+      Container.config.fees.amounts.forEach(function (period) {
+        var periodFeeRange = _.range(startFrom, period.diff+1);
+        periodFeeRange = _.map(periodFeeRange, function () {
+          return period.fee;
+        });
+        startFrom += periodFeeRange.length;
+        feeRange.push(periodFeeRange);
+      });
+      Container.fees.feeRange = _.flatten(feeRange);
+    }
+
     return async.each(Container.services, function (service, callback) {
       if (fs.existsSync(path.join(__dirname, 'rest', service, 'config', 'errorCodes', 'index.js'))) {
         _.assign(Container.config.errorCodes, require(path.join(__dirname, 'rest', service, 'config', 'errorCodes')));

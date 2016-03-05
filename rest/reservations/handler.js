@@ -116,11 +116,6 @@ module.exports = (function () {
       }
 
       if (action == 'cancel') {
-        // var moment = require('moment')
-        // var startDate = moment('2013-5-11 8:73:18', 'YYYY-M-DD HH:mm:ss')
-        // var endDate = moment('2013-5-11 10:73:18', 'YYYY-M-DD HH:mm:ss')
-        // var secondsDiff = endDate.diff(startDate, 'seconds')
-        // console.log(secondsDiff)
         Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
           if (err) return next('MONGO_ERROR');
           if (!reservation) return next('RESERVATION_NOT_FOUND');
@@ -129,7 +124,6 @@ module.exports = (function () {
               if (err) return next('MONGO_ERROR');
               if (!found) return next('ROOM_NOT_FOUND');
               var now = moment();
-              // termin.from
               var termin = _.find(found.available, function (ter) {
                   if (ter._id == req.body.order.termin){
                     return true
@@ -137,11 +131,17 @@ module.exports = (function () {
                   return false;
                 });
               var then = moment(termin.from);
-              var diff = then.diff(now, 'days');
-              if (parseInt(diff) < 0) {
-                return next('RESERVATION_INVALID_DATE')
+              var diff = parseInt(then.diff(now, Container.fees.dateType));
+              if (diff < 0) {
+                return next('RESERVATION_INVALID_DATE');
               }
-
+              var fee = 0;
+              if (diff > Container.fees.feeRange.length-1) {
+                fee = Container.fees.maxFee;
+              } else {
+                fee = Container.fees.feeRange[diff];
+              }
+              var amt = reservation.amount * (1-fee);
               var options = {
                 url: 'http://194.106.182.81/test_app/' + action,
                 method: 'POST',
@@ -149,7 +149,8 @@ module.exports = (function () {
                   token: process.env.INTESA_TOKEN
                 },
                 form: {
-                  paymentId: paymentId
+                  paymentId: paymentId,
+                  amt: amt
                 }
               }
               return request(options, function (err, response, body) {

@@ -8,5 +8,10 @@ module.exports = {
   	httpCode: 500,
   	message: "Invalid action",
   	errorServerity: "green"
+  },
+  'RESERVATION_INVALID_DATE': {
+    httpCode: 500,
+    message: "Reservation date surpassed",
+    errorServerity: "green"
   }
 }
