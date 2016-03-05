@@ -29,8 +29,10 @@ var ReservationSchema = new Schema({
     required: true
   },
   created_at: {
-    type: Date,
-    default: Date.now
+    type: Date
+  },
+  updated_on: {
+    type: Date
   }
 });
 
