@@ -34,6 +34,9 @@ var ContactSchema = new Schema({
     },
     website: {
         type: String
+    },
+    director: {
+        type: String
     }
 });
 

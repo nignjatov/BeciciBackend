@@ -10,6 +10,11 @@ var RoomSchema = new Schema({
         type: Schema.Types.Mixed,
         required: true
     },
+    active: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     description: {
         type: Schema.Types.Mixed,
         required: true
