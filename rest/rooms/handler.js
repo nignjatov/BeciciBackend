@@ -3,7 +3,7 @@ var rooms = require("./models");
 module.exports = (function () {
   return {
     getRooms: function (req, res, next) {
-      return rooms.find({}, function (err, list) {
+      return rooms.find({active : true}, function (err, list) {
         if (err) return next("MONGO_ERROR", err);
         res.json(list);
         return next(null, list);
@@ -11,7 +11,7 @@ module.exports = (function () {
     },
     getRoomById: function (req, res, next) {
       var roomId = req.params.roomId;
-      return rooms.find({_id: roomId}, function (err, list) {
+      return rooms.find({_id: roomId, active:true}, function (err, list) {
         if (err) return next("MONGO_ERROR", err);
         if (!list) return next("NOT_FOUND");
         res.json(list);
@@ -29,7 +29,10 @@ module.exports = (function () {
     },
     deleteRoom: function (req, res, next) {
       var roomId = req.params.roomId;
-      return rooms.findOneAndRemove({_id: roomId}, function (err) {
+      var delReq = {
+        active : false
+      }
+      return rooms.findOneAndUpdate({_id: roomId},delReq, function (err) {
         if (err) return next("MONGO_ERROR", err);
         res.json({_id: roomId});
         return next();

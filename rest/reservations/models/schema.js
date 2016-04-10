@@ -33,6 +33,9 @@ var ReservationSchema = new Schema({
   },
   updated_on: {
     type: Date
+  },
+  roomNumber : {
+    type : String
   }
 });
 
