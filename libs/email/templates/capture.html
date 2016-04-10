@@ -5,12 +5,34 @@
     <title>Signup Becici</title>
 </head>
 <body>
-<h3>CAPTURE</h3>
-Reservation: {{reservation}}
+<h5>Poštovani,</h5>
+<h5>Rezervacije sobe je uspešno izvršena.</h5>
+<h5>Molimo Vas da se dana {{termin.fromFormatted}} javite u hotel najranije u 13 časova. Hotel treba da napustite dana {{termin.toFormatted}} najkasnije u 9 časova.</h5>
+<br>
+<h4>Podaci o rezervaciji</h4>
+<h5>Ime i prezime putnika : {{reservation.order.name}} {{reservation.order.lastname}}</h5>
+<h5>Adress putnika : {{reservation.order.address}}, {{reservation.order.city}}</h5>
+<h5>Telefon putnika : {{reservation.order.phone}}</h5>
+<h5>Email adresa korisnika : {{reservation.order.email}}</h5>
 
-Room: {{room}}
+<h5>Vrsta sobe : {{room.type["rs"]}}</h5>
+<h5>Period smeštaja : {{termin.fromFormatted}} - {{termin.toFormatted}}</h5>
+<br>
+<h4>Podaci o transakciji dodeljeni od banke</h4>
+<h5>ID transakcije : {{reservation.trackid}}</h5>
+<h5>Iznos transakcije : {{reservation.amount}}  RSD</h5>
+<h5>(PDV se ne iksazuje po članu 35. zakona o PDV)</h5>
 
-Termin: {{termin}}
+<h5>Datum i vreme izvršene rezervacije: {{reservation.created_at}}</h5>
+<br>
+<h4>Podaci o trgovcu</h4>
+<h5>O Zone ad Beograd</h5>
+<h5>Maršala Birjuzova 3-5</h5>
+<h5>PIB: 104104443</h5>
+
+<h5>Datum: {{date}}</h5>
+<h5>S poštovanjem,</h5>
+<h5>O Zone</h5>
 
 </body>
 </html>

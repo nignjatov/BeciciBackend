@@ -5,8 +5,6 @@ var _ = require('lodash');
 var ObjectId = require('mongoose').Types.ObjectId;
 
 _calculatePrice = function (resInfo, room, termin, course) {
-    console.log("CALC");
-    console.log(resInfo);
     var end = new Date(termin.to);
     var start = new Date(termin.from)
     var daysNumber = (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
@@ -100,11 +98,12 @@ module.exports = (function () {
                                     if (err) return next('MONGO_ERROR');
                                     return Container.email.send('capture',
                                         {
-                                            reservation: JSON.stringify(reservation, null, 2),
-                                            room: JSON.stringify(found, null, 2),
-                                            termin: JSON.stringify(termin, null, 2)
+                                            reservation: reservation,
+                                            room: found,
+                                            termin: termin,
+                                            date : new Date()
                                         },
-                                        req.body.email,
+                                        reservation.order.email,
                                         function (err) {
                                             if (err) return next(err);
                                             res.sendStatus(200);
@@ -133,7 +132,7 @@ module.exports = (function () {
                                         room: JSON.stringify(found, null, 2),
                                         termin: JSON.stringify(termin, null, 2)
                                     },
-                                    req.body.email,
+                                    reservation.order.email,
                                     function (err) {
                                         if (err) return next(err);
                                         res.sendStatus(200);
@@ -181,11 +180,13 @@ module.exports = (function () {
                                     Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
                                         if (err) return next('MONGO_ERROR');
                                         if (!found) return next('RESERVATION_NOT_FOUND'); // zavesti
+                                        termin.fromFormatted
                                         return Container.email.send('capture',
                                             {
                                                 reservation: JSON.stringify(reservation, null, 2),
                                                 room: JSON.stringify(found, null, 2),
-                                                termin: JSON.stringify(termin, null, 2)
+                                                termin: JSON.stringify(termin, null, 2),
+                                                date : new Date()
                                             },
                                             req.body.email,
                                             function (err) {

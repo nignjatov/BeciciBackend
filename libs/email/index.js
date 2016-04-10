@@ -45,16 +45,46 @@ module.exports = {
             { data:msg, alternative:true }
           ]
         };
-      } else {
+      } else if (type == 'capture') {
         var msg = {
           from: Container.credentials.EMAIL_HOSTNAME,
           to: toAddress,
-          subject: "Make config for this",
+          subject: "Uspešna rezervacija",
           text: msg,
           attachment: [
-            { data:msg, alternative:true }
+            {data: msg, alternative: true}
           ]
-        };  
+        };
+      } else if (type == 'reject') {
+        var msg = {
+          from: Container.credentials.EMAIL_HOSTNAME,
+          to: toAddress,
+          subject: "Neuspešna rezervacija",
+          text: msg,
+          attachment: [
+            {data: msg, alternative: true}
+          ]
+        };
+      } else if (type == 'cancel'){
+        var msg = {
+          from: Container.credentials.EMAIL_HOSTNAME,
+          to: toAddress,
+          subject: "Otkaz rezervacije",
+          text: msg,
+          attachment: [
+            {data: msg, alternative: true}
+          ]
+        };
+      }else {
+        var msg = {
+          from: Container.credentials.EMAIL_HOSTNAME,
+          to: toAddress,
+          subject: "make config",
+          text: msg,
+          attachment: [
+            {data: msg, alternative: true}
+          ]
+        };
       }
       
       return this.email.send(msg, function (err) {
