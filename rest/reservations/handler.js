@@ -69,6 +69,7 @@ module.exports = (function () {
                 if (err) return next('MONGO_ERROR');
                 if (!reservation) return next('RESERVATION_NOT_FOUND');
                 reservation = reservation.toObject();
+                console.log(reservation.status);
                 if (reservation.status == 'APPROVED') {
                     Container.models['rooms'].findOne({'_id': reservation.order.room}, function (err, found) {
                         if (err) return next('MONGO_ERROR');
@@ -82,51 +83,9 @@ module.exports = (function () {
                         if (termin.remained > 0) {
                             //accept reservation
                             termin.remained--;
-                            var options = {
-                                url: 'http://194.106.182.81/test_app/capture',
-                                method: 'POST',
-                                headers: {
-                                    token: process.env.INTESA_TOKEN
-                                },
-                                form: {
-                                    paymentId: paymentId
-                                }
-                            }
-                            return request(options, function (err, response, body) {
-                                if (err || response.statusCode != 200) return next(body);
-                                return found.save(function (err) {
-                                    if (err) return next('MONGO_ERROR');
-                                    return Container.email.send('capture',
-                                        {
-                                            reservation: reservation,
-                                            room: found,
-                                            termin: termin,
-                                            date : new Date()
-                                        },
-                                        reservation.order.email,
-                                        function (err) {
-                                            if (err) return next(err);
-                                            res.sendStatus(200);
-                                            return next();
-                                        }
-                                    );
-                                })
-                            });
-                        } else {
-                            // reject reservation
-                            var options = {
-                                url: 'http://194.106.182.81/test_app/reject',
-                                method: 'POST',
-                                headers: {
-                                    token: process.env.INTESA_TOKEN
-                                },
-                                form: {
-                                    paymentId: paymentId
-                                }
-                            }
-                            return request(options, function (err, response, body) {
-                                if (err || response.statusCode != 200) return next(body);
-                                return Container.email.send('reject',
+                            return found.save(function (err) {
+                                if (err) return next('MONGO_ERROR');
+                                return Container.email.send('capture',
                                     {
                                         reservation: JSON.stringify(reservation, null, 2),
                                         room: JSON.stringify(found, null, 2),
@@ -135,15 +94,32 @@ module.exports = (function () {
                                     reservation.order.email,
                                     function (err) {
                                         if (err) return next(err);
-                                        res.sendStatus(200);
+                                        res.json(reservation);
                                         return next();
                                     }
                                 );
-                            });
+                            })
+                        } else {
+                            // reject reservation
+
+                            return Container.email.send('reject',
+                                {
+                                    reservation: JSON.stringify(reservation, null, 2),
+                                    room: JSON.stringify(found, null, 2),
+                                    termin: JSON.stringify(termin, null, 2)
+                                },
+                                req.body.email,
+                                function (err) {
+                                    if (err) return next(err);
+                                    res.json(reservation);
+                                    return next();
+                                }
+                            );
+
                         }
                     });
                 }
-                res.json(reservation);
+
             });
         },
         updateReservationStatus: function (req, res, next) {
