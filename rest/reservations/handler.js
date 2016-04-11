@@ -2,6 +2,8 @@ var Reservation = require("./models");
 var request = require('request');
 var moment = require('moment');
 var _ = require('lodash');
+var dateFormat = require('dateformat');
+
 var ObjectId = require('mongoose').Types.ObjectId;
 
 _calculatePrice = function (resInfo, room, termin, course) {
@@ -68,14 +70,13 @@ module.exports = (function () {
             Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
                 if (err) return next('MONGO_ERROR');
                 if (!reservation) return next('RESERVATION_NOT_FOUND');
-                reservation = reservation.toObject();
-                console.log(reservation.status);
-                if (reservation.status == 'APPROVED') {
-                    Container.models['rooms'].findOne({'_id': reservation.order.room}, function (err, found) {
+                reservationObj = reservation.toObject();
+                if (reservationObj.status == 'APPROVED') {
+                    Container.models['rooms'].findOne({'_id': reservationObj.order.room}, function (err, found) {
                         if (err) return next('MONGO_ERROR');
                         if (!found) return next('ROOM_NOT_FOUND');
                         var termin = _.find(found.available, function (ter) {
-                            if (ter._id == reservation.order.termin) {
+                            if (ter._id == reservationObj.order.termin) {
                                 return true
                             }
                             return false;
@@ -83,43 +84,65 @@ module.exports = (function () {
                         if (termin.remained > 0) {
                             //accept reservation
                             termin.remained--;
-                            return found.save(function (err) {
+                            reservationObj.status = "CAPTURED";
+                            return Reservation.findOneAndUpdate({paymentId: reservationObj.paymentId}, {status: "CAPTURED"}, function (err) {
                                 if (err) return next('MONGO_ERROR');
-                                return Container.email.send('capture',
+                                return found.save(function (err) {
+                                    if (err) return next('MONGO_ERROR');
+                                    termin.fromFormatted = dateFormat(termin.from, "dd/mm/yyyy");
+                                    termin.toFormatted = dateFormat(termin.to, "dd/mm/yyyy");
+                                    reservationObj.created_atFormatted = dateFormat(reservationObj.created_at, "dd/mm/yyyy h:MM:ss");
+                                    return Container.email.send('capture',
+                                        {
+                                            reservation: reservationObj,
+                                            room: found,
+                                            termin: termin,
+                                            date: dateFormat(new Date(), "dd/mm/yyyy")
+                                        },
+                                        reservationObj.order.email,
+                                        function (err) {
+                                            if (err) return next(err);
+                                            res.json(reservationObj);
+                                            return next();
+                                        }
+                                    );
+                                })
+                            });
+                        } else {
+                            reservationObj.status = "VOIDED";
+                            reservationObj.created_atFormatted = dateFormat(reservationObj.created_at, "dd/mm/yyyy h:MM:ss");
+                            // reject reservation
+                            return Reservation.findOneAndUpdate({paymentId: reservationObj.paymentId}, {status: "VOIDED"}, function (err) {
+                                if (err) return next('MONGO_ERROR');
+                                return Container.email.send('rejectBank',
                                     {
-                                        reservation: JSON.stringify(reservation, null, 2),
-                                        room: JSON.stringify(found, null, 2),
-                                        termin: JSON.stringify(termin, null, 2)
+                                        reservation: reservationObj,
+                                        room: found,
+                                        termin: termin
                                     },
-                                    reservation.order.email,
+                                    "ignjatov90@hotmail.com",
                                     function (err) {
                                         if (err) return next(err);
-                                        res.json(reservation);
-                                        return next();
-                                    }
-                                );
-                            })
-                        } else {
-                            // reject reservation
-
-                            return Container.email.send('reject',
-                                {
-                                    reservation: JSON.stringify(reservation, null, 2),
-                                    room: JSON.stringify(found, null, 2),
-                                    termin: JSON.stringify(termin, null, 2)
-                                },
-                                req.body.email,
-                                function (err) {
-                                    if (err) return next(err);
-                                    res.json(reservation);
-                                    return next();
-                                }
-                            );
-
+                                        return Container.email.send('reject',
+                                            {
+                                                reservation: reservationObj,
+                                                room: found,
+                                                termin: termin
+                                            },
+                                            reservationObj.order.email,
+                                            function (err) {
+                                                if (err) return next(err);
+                                                res.json(reservationObj);
+                                                return next();
+                                            }
+                                        );
+                                    });
+                            });
                         }
                     });
+                } else {
+                    return next('MONGO_ERROR');
                 }
-
             });
         },
         updateReservationStatus: function (req, res, next) {
@@ -162,7 +185,7 @@ module.exports = (function () {
                                                 reservation: JSON.stringify(reservation, null, 2),
                                                 room: JSON.stringify(found, null, 2),
                                                 termin: JSON.stringify(termin, null, 2),
-                                                date : new Date()
+                                                date: new Date()
                                             },
                                             req.body.email,
                                             function (err) {
@@ -175,51 +198,6 @@ module.exports = (function () {
                                 });
                             });
                         })
-                    } else {
-                        return next('OPERATION_NOT_ALLOWED')
-                    }
-                });
-            }
-            if (action == 'reject') {
-                // reject
-                Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
-                    if (reservation && reservation.status == 'APPROVED') {
-                        var options = {
-                            url: 'http://194.106.182.81/test_app/' + action,
-                            method: 'POST',
-                            headers: {
-                                token: process.env.INTESA_TOKEN
-                            },
-                            form: {
-                                paymentId: paymentId
-                            }
-                        }
-                        return request(options, function (err, response, body) {
-                            if (err || response.statusCode != 200) return next(body);
-                            Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
-                                if (err) return next('MONGO_ERROR');
-                                if (!found) return next('ROOM_NOT_FOUND');
-                                var termin = _.find(found.available, function (ter) {
-                                    if (ter._id == req.body.order.termin) {
-                                        return true
-                                    }
-                                    return false;
-                                });
-                                return Container.email.send('reject',
-                                    {
-                                        reservation: JSON.stringify(reservation, null, 2),
-                                        room: JSON.stringify(found, null, 2),
-                                        termin: JSON.stringify(termin, null, 2)
-                                    },
-                                    req.body.email,
-                                    function (err) {
-                                        if (err) return next(err);
-                                        res.sendStatus(200);
-                                        return next();
-                                    }
-                                );
-                            });
-                        });
                     } else {
                         return next('OPERATION_NOT_ALLOWED')
                     }

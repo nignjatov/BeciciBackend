@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup Becici</title>
+</head>
+<body>
+<h4>Poštovani,</h4>
+<h4>U napem sistemu za rezervaciju hotelskog smeštaja je došlo do overbookinga, stoga Vas molimo da stornirate autorizaciju.</h4>
+
+<br>
+<h5>Datum transakcije : {{reservation.created_atFormatted}}</h5>
+<h5>Iznos transakcije : {{reservation.amount}} RSD</h5>
+<h5>Iznos transakcije za storniranje : {{reservation.amount}} RSD</h5>
+
+<br>
+<h4>Podaci o transakciji</h4>
+<h5>PAYMENT_ID: {{reservation.notification.paymentid}}</h5>
+<h5>TRANSACTION_ID: {{reservation.notification.trackid}}</h5>
+<h5>AUTH_CODE : {{reservation.notification.auth}}</h5>
+
+
+<br>
+<h5>Naziv e-commerce prodajnog mesta : POPUNITI</h5>
+
+<br>
+<h4>Podaci o kupcu</h4>
+<h5>Ime i prezime : {{reservation.order.name}} {{reservation.order.lastname}}</h5>
+
+<br>
+<h5>Potpis: POPUNITI</h5>
+<h5>Pečat: POPUNITI</h5>
+
+<h5>S poštovanjem,</h5>
+<h5>O Zone</h5>
+
+
+</body>
+</html>

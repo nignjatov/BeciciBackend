@@ -16,8 +16,8 @@ var ReservationSchema = new Schema({
     required: true},
   status: {
     type: String,
-    enum: ['waiting', 'approved', 'rejected', 'archived'],
-    default: 'waiting',
+    enum: ['INIT', 'APPROVED', 'VOIDED', 'CAPTURED', 'CANCELED'],
+    default: 'INIT',
     required: true
   },
   start_date: {

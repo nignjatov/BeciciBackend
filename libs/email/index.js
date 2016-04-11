@@ -75,7 +75,28 @@ module.exports = {
             {data: msg, alternative: true}
           ]
         };
-      }else {
+      } else if (type == 'rejectBank'){
+        var msg = {
+          from: Container.credentials.EMAIL_HOSTNAME,
+          to: toAddress,
+          subject: "Storno Autorizacije",
+          text: msg,
+          attachment: [
+            {data: msg, alternative: true}
+          ]
+        };
+      } else if (type == 'cancelBank'){
+        var msg = {
+          from: Container.credentials.EMAIL_HOSTNAME,
+          to: toAddress,
+          subject: "Storno Transakcije",
+          text: msg,
+          attachment: [
+            {data: msg, alternative: true}
+          ]
+        };
+      }
+      else {
         var msg = {
           from: Container.credentials.EMAIL_HOSTNAME,
           to: toAddress,
