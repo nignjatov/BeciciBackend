@@ -1,6 +1,7 @@
 var Reservation = require("./models");
 var request = require('request');
 var moment = require('moment');
+var crypto = require('crypto');
 var _ = require('lodash');
 var dateFormat = require('dateformat');
 
@@ -72,6 +73,7 @@ module.exports = (function () {
                 if (!reservation) return next('RESERVATION_NOT_FOUND');
                 reservationObj = reservation.toObject();
                 if (reservationObj.status == 'APPROVED') {
+                    console.log(reservationObj);
                     Container.models['rooms'].findOne({'_id': reservationObj.order.room}, function (err, found) {
                         if (err) return next('MONGO_ERROR');
                         if (!found) return next('ROOM_NOT_FOUND');
@@ -81,13 +83,19 @@ module.exports = (function () {
                             }
                             return false;
                         });
-                        if (termin.remained > 0) {
+                        if (termin.remained <= 0) {
                             //accept reservation
                             termin.remained--;
                             reservationObj.status = "CAPTURED";
-                            return Reservation.findOneAndUpdate({paymentId: reservationObj.paymentId}, {status: "CAPTURED"}, function (err) {
+                            var appCode = crypto.randomBytes(32).toString('hex');
+                            return Reservation.findOneAndUpdate({paymentId: reservationObj.paymentId}, {
+                                status: "CAPTURED",
+                                approvalCode: appCode
+                            }, function (err) {
+                                console.log(err);
                                 if (err) return next('MONGO_ERROR');
                                 return found.save(function (err) {
+                                    console.log(err);
                                     if (err) return next('MONGO_ERROR');
                                     termin.fromFormatted = dateFormat(termin.from, "dd/mm/yyyy");
                                     termin.toFormatted = dateFormat(termin.to, "dd/mm/yyyy");
@@ -97,7 +105,8 @@ module.exports = (function () {
                                             reservation: reservationObj,
                                             room: found,
                                             termin: termin,
-                                            date: dateFormat(new Date(), "dd/mm/yyyy")
+                                            date: dateFormat(new Date(), "dd/mm/yyyy"),
+                                            appCode: appCode
                                         },
                                         reservationObj.order.email,
                                         function (err) {
@@ -141,7 +150,8 @@ module.exports = (function () {
                         }
                     });
                 } else {
-                    return next('MONGO_ERROR');
+                    res.json(reservationObj);
+                    return next();
                 }
             });
         },
@@ -149,55 +159,14 @@ module.exports = (function () {
             var paymentId = req.params.paymentId;
             var action = req.params.status;
 
-            if (action == 'capture') {
+            if (action == 'paid') {
                 Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
-                    if (reservation && reservation.status == 'APPROVED') {
-                        Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
+                    if (reservation && reservation.status == 'CAPTURED') {
+                        return Reservation.findOneAndUpdate({paymentId: paymentId}, {status: "PAID"}, function (err) {
                             if (err) return next('MONGO_ERROR');
-                            if (!found) return next('ROOM_NOT_FOUND');
-                            var termin = _.find(found.available, function (ter) {
-                                if (ter._id == req.body.order.termin) {
-                                    return true
-                                }
-                                return false;
-                            });
-                            if (!termin.remained--) return next('ROOM_NOT_AVAILABLE');
-                            var options = {
-                                url: 'http://194.106.182.81/test_app/' + action,
-                                method: 'POST',
-                                headers: {
-                                    token: process.env.INTESA_TOKEN
-                                },
-                                form: {
-                                    paymentId: paymentId
-                                }
-                            }
-                            return request(options, function (err, response, body) {
-                                if (err || response.statusCode != 200) return next(body);
-                                return found.save(function (err) {
-                                    if (err) return next('MONGO_ERROR');
-                                    Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
-                                        if (err) return next('MONGO_ERROR');
-                                        if (!found) return next('RESERVATION_NOT_FOUND'); // zavesti
-                                        termin.fromFormatted
-                                        return Container.email.send('capture',
-                                            {
-                                                reservation: JSON.stringify(reservation, null, 2),
-                                                room: JSON.stringify(found, null, 2),
-                                                termin: JSON.stringify(termin, null, 2),
-                                                date: new Date()
-                                            },
-                                            req.body.email,
-                                            function (err) {
-                                                if (err) return next(err);
-                                                res.sendStatus(200);
-                                                return next();
-                                            }
-                                        );
-                                    })
-                                });
-                            });
-                        })
+                            res.json(reservation);
+                            next();
+                        });
                     } else {
                         return next('OPERATION_NOT_ALLOWED')
                     }
@@ -208,13 +177,15 @@ module.exports = (function () {
                 Container.models['reservations'].findOne({paymentId: paymentId}, function (err, reservation) {
                     if (err) return next('MONGO_ERROR');
                     if (!reservation) return next('RESERVATION_NOT_FOUND');
-                    if (reservation && reservation.status == 'CAPTURED') {
-                        Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
+                    if (reservation && reservation.status == 'PAID') {
+                        console.log(reservation);
+                        reservationObj = reservation.toObject();
+                        Container.models['rooms'].findOne({'_id': reservationObj.order.room}, function (err, found) {
                             if (err) return next('MONGO_ERROR');
                             if (!found) return next('ROOM_NOT_FOUND');
                             var now = moment();
                             var termin = _.find(found.available, function (ter) {
-                                if (ter._id == req.body.order.termin) {
+                                if (ter._id == reservationObj.order.termin) {
                                     return true
                                 }
                                 return false;
@@ -231,37 +202,26 @@ module.exports = (function () {
                                 fee = Container.fees.feeRange[diff];
                             }
                             var amt = reservation.amount * (1 - fee);
-                            var options = {
-                                url: 'http://194.106.182.81/test_app/' + action,
-                                method: 'POST',
-                                headers: {
-                                    token: process.env.INTESA_TOKEN
-                                },
-                                form: {
-                                    paymentId: paymentId,
-                                    amt: amt
-                                }
-                            }
-                            return request(options, function (err, response, body) {
-                                if (err || response.statusCode != 200) return next(body);
-                                termin.remained++;
-                                return found.save(function (err) {
-                                    if (err) return next('MONGO_ERROR');
+                            var cancCode = crypto.randomBytes(32).toString('hex');
+                            //Send emails and update termin and reservation
+                            termin.remained++;
+                            return found.save(function (err) {
+                                if (err) return next('MONGO_ERROR');
 
-                                    return Container.email.send('cancel',
-                                        {
-                                            reservation: JSON.stringify(reservation, null, 2),
-                                            room: JSON.stringify(found, null, 2),
-                                            termin: JSON.stringify(termin, null, 2)
-                                        },
-                                        req.body.email,
-                                        function (err) {
-                                            if (err) return next(err);
-                                            res.sendStatus(200);
-                                            return next();
-                                        }
-                                    );
-                                });
+                                return Container.email.send('cancel',
+                                    {
+                                        reservation: JSON.stringify(reservation, null, 2),
+                                        room: JSON.stringify(found, null, 2),
+                                        termin: JSON.stringify(termin, null, 2),
+                                        cancCode : cancCode
+                                    },
+                                    req.body.email,
+                                    function (err) {
+                                        if (err) return next(err);
+                                        res.sendStatus(200);
+                                        return next();
+                                    }
+                                );
                             });
                         });
                     } else {
