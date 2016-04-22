@@ -83,7 +83,7 @@ module.exports = (function () {
                             }
                             return false;
                         });
-                        if (termin.remained <= 0) {
+                        if (termin.remained > 0) {
                             //accept reservation
                             termin.remained--;
                             reservationObj.status = "CAPTURED";
@@ -201,42 +201,58 @@ module.exports = (function () {
                             } else {
                                 fee = Container.fees.feeRange[diff];
                             }
-                            var amt = reservation.amount * (1 - fee);
+                            console.log(Container.fees.feeRange);
+                            var amt = (reservationObj.amount * (1 - fee)).toFixed(4);
+                            console.log("Cancel date diff "+ diff);
+                            console.log("Returning amount "+ amt);
                             var cancCode = crypto.randomBytes(32).toString('hex');
+                            reservationObj.created_atFormatted = dateFormat(reservationObj.created_at, "dd/mm/yyyy h:MM:ss");
                             //Send emails and update termin and reservation
                             termin.remained++;
-                            return found.save(function (err) {
-                                if (err) return next('MONGO_ERROR');
-
-                                return Container.email.send('cancel',
-                                    {
-                                        reservation: JSON.stringify(reservation, null, 2),
-                                        room: JSON.stringify(found, null, 2),
-                                        termin: JSON.stringify(termin, null, 2),
-                                        cancCode : cancCode
-                                    },
-                                    req.body.email,
-                                    function (err) {
-                                        if (err) return next(err);
-                                        res.sendStatus(200);
-                                        return next();
-                                    }
-                                );
-                            });
+                            return Container.email.send('cancelOZone',
+                                {
+                                    reservation: reservationObj,
+                                    room: found,
+                                    termin: termin,
+                                    amt : amt
+                                },
+                                "ignjatov90@hotmail.com, nemanjartrk@gmail.com",
+                                function (err) {
+                                    if (err) return next(err);
+                                    return Container.email.send('cancel',
+                                        {
+                                            cancCode: cancCode
+                                        },
+                                        reservationObj.order.email,
+                                        function (err) {
+                                            if (err) return next(err);
+                                            return found.save(function (err) {
+                                                if (err) return next('MONGO_ERROR');
+                                                return Reservation.findOneAndUpdate({paymentId: paymentId}, {status: "CANCELED" }, function (err) {
+                                                    if (err) return next('MONGO_ERROR');
+                                                    res.json(reservation);
+                                                    next();
+                                                });
+                                            });
+                                        });
+                                });
                         });
-                    } else {
+                    }
+                    else {
                         return next('OPERATION_NOT_ALLOWED')
                     }
                 });
             }
-        },
+        }
+        ,
         deleteReservation: function (req, res, next) {
             var reservationId = req.params.reservationId;
             return Reservation.findOneAndRemove({_id: reservationId}, function (err) {
                 if (err) return next("MONGO_ERROR", err);
                 return next();
             });
-        },
+        }
+        ,
         createReservation: function (req, res, next) {
             // check room and calculate price
             Container.models['courses'].findOne({'currency': "EUR"}, function (err, course) {
@@ -275,7 +291,8 @@ module.exports = (function () {
             });
 
 
-        },
+        }
+        ,
         saveRoomNumber: function (req, res, next) {
             var paymentId = req.params.paymentId;
             return Reservation.findOneAndUpdate({paymentId: paymentId}, req.body, function (err) {
@@ -285,4 +302,5 @@ module.exports = (function () {
             });
         }
     }
-})();
+})
+();

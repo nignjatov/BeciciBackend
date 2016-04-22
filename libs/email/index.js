@@ -95,8 +95,17 @@ module.exports = {
             {data: msg, alternative: true}
           ]
         };
-      }
-      else {
+      } else if (type == 'cancelOZone'){
+        var msg = {
+          from: Container.credentials.EMAIL_HOSTNAME,
+          to: toAddress,
+          subject: "Storno Transakcije",
+          text: msg,
+          attachment: [
+            {data: msg, alternative: true}
+          ]
+        };
+      } else {
         var msg = {
           from: Container.credentials.EMAIL_HOSTNAME,
           to: toAddress,

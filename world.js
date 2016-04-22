@@ -59,11 +59,12 @@ module.exports = {
         'dateType': Container.config.fees.dateType,
         'maxFee': Container.config.fees.amounts.pop().fee
       }
-
       Container.config.fees.amounts.forEach(function (period) {
-        var periodFeeRange = _.range(startFrom, period.diff+1);
+
+        var periodFeeRange = _.range(startFrom, Container.config.fees.days[ Container.config.fees.amounts.indexOf(period)]);
+
         periodFeeRange = _.map(periodFeeRange, function () {
-          return period.fee;
+          return period;
         });
         startFrom += periodFeeRange.length;
         feeRange.push(periodFeeRange);
