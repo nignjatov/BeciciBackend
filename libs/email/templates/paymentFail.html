@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup Becici</title>
+</head>
+<body>
+<h5>Poštovani,</h5>
+<h5>Vaša transakcija nije bila uspešna,Vaš račun nije zadužen.</h5>
+<h5>Najčešći uzrok je pogrešno unet broj kartice, datum isteka ili sigurnosni kod. Molimo Vas da pokušate rezervaciju ponovo, u slučaju uzastopnih grešaka kontaktirajte vašu banku.</h5>
+
+
+<br>
+<h4>Podaci o korisniku</h4>
+<h5>Ime i prezime putnika : {{reservation.order.name}} {{reservation.order.lastname}}</h5>
+<h5>Adress putnika : {{reservation.order.address}}, {{reservation.order.city}}</h5>
+<h5>Telefon putnika : {{reservation.order.phone}}</h5>
+<h5>Email adresa korisnika : {{reservation.order.email}}</h5>
+<br>
+<h4>Podaci o rezervaciji</h4>
+<h5>Jedinstveni identifikator transakcije : {{reservation.trackid}}</h5>
+<h5>Vrsta sobe : {{room.type["rs"]}}</h5>
+<h5>Period smeštaja : {{termin.fromFormatted}} - {{termin.toFormatted}}</h5>
+<h5>Cena noćenja po osobi : {{reservation.order.pricePerNight}} RSD</h5>
+<h5>Popuste na cene možete naći na <a href="{{reservation.discountLink}}" target="_blank">linku</a></h5>
+<br>
+<h4>Podaci o transakciji dodeljeni od banke</h4>
+<h5>PAYMENT ID : {{reservation.paymentId}}</h5>
+
+<h5>Datum i vreme izvršene rezervacije: {{reservation.created_atFormatted}}</h5>
+
+<h5>Iznos transakcije : {{reservation.amount}}  RSD</h5>
+<h5>(PDV se ne iskazuje po članu 35. zakona o PDV)</h5>
+<br>
+<h5>Tekst uslova o uslovima otkaza rezervacije se nalazi na <a href="http://194.106.182.81/partials/cancelationTerms.html" target="_blank">linku</a></h5>
+<h5>Tekst uslova o uslovima za avansnu naplatu hotelskog smeštaja nalazi se na <a href="http://194.106.182.81/partials/adsTerms.html" target="_blank">linku</a></h5>
+<br>
+<h4>Podaci o trgovcu</h4>
+<h5>O Zone ad Beograd</h5>
+<h5>Maršala Birjuzova 3-5</h5>
+<h5>PIB: 104104443</h5>
+<h5>Matični broj: 20094630</h5>
+
+<h5>Datum: {{date}}</h5>
+<h5>S poštovanjem,</h5>
+<h5>O Zone</h5>
+
+</body>
+</html>

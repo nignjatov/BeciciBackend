@@ -45,6 +45,26 @@ module.exports = {
             { data:msg, alternative:true }
           ]
         };
+      } else if (type == 'paymentOk') {
+        var msg = {
+          from: Container.credentials.EMAIL_HOSTNAME,
+          to: toAddress,
+          subject: "Potvrda plaćanja",
+          text: msg,
+          attachment: [
+            {data: msg, alternative: true}
+          ]
+        };
+      } else if (type == 'paymentFail') {
+        var msg = {
+          from: Container.credentials.EMAIL_HOSTNAME,
+          to: toAddress,
+          subject: "Potvrda plaćanja",
+          text: msg,
+          attachment: [
+            {data: msg, alternative: true}
+          ]
+        };
       } else if (type == 'capture') {
         var msg = {
           from: Container.credentials.EMAIL_HOSTNAME,
