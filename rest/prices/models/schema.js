@@ -5,6 +5,11 @@ var PriceSchema = new Schema({
     filename: {
         type: String,
         required: true
+    },
+    type : {
+        type: String,
+        required: true,
+        enum: ["priceList","individualReservation","groupReservation"],
     }
 });
 

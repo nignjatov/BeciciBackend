@@ -138,6 +138,7 @@ module.exports = {
       }
       
       return this.email.send(msg, function (err) {
+        console.log(err);
         if (err) return callback('EMAIL_SEND_ERROR');
         return callback(null);
       });

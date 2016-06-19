@@ -26,6 +26,8 @@
 <br>
 <h4>Podaci o transakciji dodeljeni od banke</h4>
 <h5>PAYMENT ID : {{reservation.paymentId}}</h5>
+<h5>AUTH CODE : {{reservation.notification != null ? reservation.notification.auth : ""}}</h5>
+<h5>TRANSACTION ID : {{reservation.notification != null ? reservation.notification.tranid : ""}}</h5>
 
 <h5>Datum i vreme izvršene rezervacije: {{reservation.created_atFormatted}}</h5>
 
