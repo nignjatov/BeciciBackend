@@ -8,7 +8,9 @@ module.exports = (function () {
   var router = RouterFactory(__dirname);
 
   router.register("getRooms", "GET", "/list/all", [], handler.getRooms);
+  router.register("getRoomsAdmin", "GET", "/admin/list/all", ["admin"], handler.getRoomsAdmin);
   router.register("getRoomById", "GET", "/:roomId", [], handler.getRoomById);
+  router.register("getRoomByIdAdmin", "GET", "/admin/:roomId", ["admin"], handler.getRoomByIdAdmin);
   router.register("createRoom", "POST", "/", ["admin"], handler.createRoom);
   router.register("updateRoom", "PATCH", "/:roomId", ["admin"], handler.updateRoom);
   router.register("deleteRoom", "DELETE", "/:roomId", ["admin"], handler.deleteRoom);

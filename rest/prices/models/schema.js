@@ -9,7 +9,7 @@ var PriceSchema = new Schema({
     type : {
         type: String,
         required: true,
-        enum: ["priceList","individualReservation","groupReservation"],
+        enum: ["priceList","individualReservationInfo","individualReservationContract","groupReservationInfo","groupReservationContract","partnersInfo","partnersContract"],
     }
 });
 

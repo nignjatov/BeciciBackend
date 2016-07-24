@@ -8,26 +8,20 @@ module.exports = (function () {
   var router = RouterFactory(__dirname);
 
   router.register("getPriceImage", "GET", "/list/all", [], handler.getPriceImage);
-  router.register("deleteIndividual", "DELETE", "/individual",  ["admin"], handler.deleteIndividualRes);
-  router.register("deleteGroup", "DELETE", "/group",  ["admin"], handler.deleteGroupRes);
+
   router.register("uploadPriceImage", "POST", "/image", ["admin"], handler.uploadPriceImage,{
     storage: "images",
     type: 'single',
     name: 'image',
     options: null
   });
-  router.register("uploadIndividualReservation", "POST", "/individual", ["admin"], handler.uploadIndividual,{
+  router.register("uploadManagementDocument", "POST", "/document/:documentType", ["admin"], handler.uploadManagementDocument,{
     storage: "images",
     type: 'single',
     name: 'image',
     options: null
   });
-  router.register("uploadGroupReservation", "POST", "/group", ["admin"], handler.uploadGroup, {
-    storage: "images",
-    type: 'single',
-    name: 'image',
-    options: null
-  });
+  router.register("deleteManagementDocument", "DELETE", "/document/:documentType",  ["admin"], handler.deleteManagementDocument);
 
   return router.getRoutes();
 })();

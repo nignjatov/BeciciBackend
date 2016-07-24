@@ -50,6 +50,11 @@ var RoomSchema = new Schema({
             required : true,
         },
         price: {type: Schema.Types.Mixed},
+        active : {
+            type : Boolean,
+            required : true,
+            default : true
+        }
     }],
     bed_number: Number,
     big_bed: Boolean,

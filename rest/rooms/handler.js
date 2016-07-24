@@ -9,9 +9,25 @@ module.exports = (function () {
         return next(null, list);
       });
     },
+    getRoomsAdmin: function (req, res, next) {
+      return rooms.find({}, function (err, list) {
+        if (err) return next("MONGO_ERROR", err);
+        res.json(list);
+        return next(null, list);
+      });
+    },
     getRoomById: function (req, res, next) {
       var roomId = req.params.roomId;
       return rooms.find({_id: roomId, active:true}, function (err, list) {
+        if (err) return next("MONGO_ERROR", err);
+        if (!list) return next("NOT_FOUND");
+        res.json(list);
+        return next(null, list);
+      });
+    },
+    getRoomByIdAdmin: function (req, res, next) {
+      var roomId = req.params.roomId;
+      return rooms.find({_id: roomId}, function (err, list) {
         if (err) return next("MONGO_ERROR", err);
         if (!list) return next("NOT_FOUND");
         res.json(list);

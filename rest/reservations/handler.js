@@ -307,13 +307,14 @@ module.exports = (function () {
                 Container.models['rooms'].findOne({'_id': req.body.order.room}, function (err, found) {
                     if (err) return next('MONGO_ERROR');
                     if (!found) return next('ROOM_NOT_FOUND');
+                    if (!found.active) return next('ROOM_NOT_FOUND');
                     var termin = _.find(found.available, function (ter) {
                         if (ter._id == req.body.order.termin) {
                             return true
                         }
                         return false;
                     });
-                    if (termin.remained > 0) {
+                    if (termin.remained > 0 && termin.active == true) {
                         req.body.amount = _calculatePrice(req.body, found, termin, course.value);
                         req.body.order.pricePerNight = termin.price["RSD"];
                         if (req.body.currency == "EUR") {

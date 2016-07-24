@@ -11,15 +11,9 @@ module.exports = (function () {
                 return next(null, list);
             });
         },
-        deleteIndividualRes: function (req, res, next) {
-            return prices.remove({type : 'individualReservation'}, function (err) {
-                if (err) return next("MONGO_ERROR", err);
-                res.json(req.body);
-                return next();
-            });
-        },
-        deleteGroupRes: function (req, res, next) {
-            return prices.remove({type : 'groupReservation'}, function (err) {
+        deleteManagementDocument: function (req, res, next) {
+            var type = req.params.documentType;
+            return prices.remove({type : type}, function (err) {
                 if (err) return next("MONGO_ERROR", err);
                 res.json(req.body);
                 return next();
@@ -35,18 +29,10 @@ module.exports = (function () {
                 return next();
             });
         },
-        uploadIndividual: function (req, res, next) {
-            var update = {filename: req.file.filename, type: 'individualReservation'};
-            return prices.update({type: 'individualReservation'}, update, {upsert: true}, function (err) {
-                console.log(err);
-                if (err) return next("MONGO_ERROR", err);
-                res.json(req.body);
-                return next();
-            });
-        },
-        uploadGroup: function (req, res, next) {
-            var update = {filename: req.file.filename, type: 'groupReservation'};
-            return prices.update({type: 'groupReservation'}, update, {upsert: true}, function (err) {
+        uploadManagementDocument: function (req, res, next) {
+            var type = req.params.documentType;
+            var update = {filename: req.file.filename, type:type};
+            return prices.update({type: type}, update, {upsert: true}, function (err) {
                 console.log(err);
                 if (err) return next("MONGO_ERROR", err);
                 res.json(req.body);
