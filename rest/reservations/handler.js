@@ -139,7 +139,7 @@ module.exports = (function () {
                             return Reservation.findOneAndUpdate({paymentId: reservationObj.paymentId}, {
                                 status: "CAPTURED",
                                 approvalCode: appCode
-                            }, function (err) {
+                            },{upsert: true}, function (err) {
                                 console.log(err);
                                 if (err) return next('MONGO_ERROR');
                                 return found.save(function (err) {
@@ -223,7 +223,6 @@ module.exports = (function () {
                     if (err) return next('MONGO_ERROR');
                     if (!reservation) return next('RESERVATION_NOT_FOUND');
                     if (reservation && reservation.status == 'PAID') {
-                        console.log(reservation);
                         reservationObj = reservation.toObject();
                         Container.models['rooms'].findOne({'_id': reservationObj.order.room}, function (err, found) {
                             if (err) return next('MONGO_ERROR');
@@ -246,7 +245,6 @@ module.exports = (function () {
                             } else {
                                 fee = Container.fees.feeRange[diff];
                             }
-                            console.log(Container.fees.feeRange);
                             var amt = (reservationObj.amount * (1 - fee)).toFixed(4);
                             console.log("Cancel date diff " + diff);
                             console.log("Returning amount " + amt);
@@ -273,8 +271,14 @@ module.exports = (function () {
                                             if (err) return next(err);
                                             return found.save(function (err) {
                                                 if (err) return next('MONGO_ERROR');
-                                                return Reservation.findOneAndUpdate({paymentId: paymentId}, {status: "CANCELED"}, function (err) {
-                                                    if (err) return next('MONGO_ERROR');
+                                                var earned = reservationObj.amount - amt;
+                                                console.log("EARNED "+ earned);
+                                                var update = {
+                                                    earned : earned,
+                                                    status : 'CANCELED'
+                                                }
+                                                return Reservation.findOneAndUpdate({paymentId: paymentId}, update, function (err) {
+                                                    if (err) return next('MONGO_ERROR')
                                                     res.json(reservation);
                                                     next();
                                                 });

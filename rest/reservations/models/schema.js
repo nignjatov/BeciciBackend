@@ -36,6 +36,14 @@ var ReservationSchema = new Schema({
   },
   roomNumber : {
     type : String
+  },
+  earned : {
+    type : String,
+    default : "0",
+  },
+  approvalCode : {
+    type : String,
+    default : ""
   }
 });
 
